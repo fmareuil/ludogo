@@ -14,6 +14,9 @@ class Genre(models.Model):
     class Meta:
         unique_together = ['name', 'type']
 
+    def __str__(self):
+        return "{} {}".format(self.type, self.name)
+
 
 class Person(models.Model):
     firstname = models.CharField(max_length=100, help_text='Prenom')
@@ -23,6 +26,9 @@ class Person(models.Model):
     class Meta:
         unique_together = ['firstname', 'lastname']
 
+    def __str__(self):
+        return "{} {}".format(self.firstname, self.lastname)
+
 
 class Localisation(models.Model):
     name = models.CharField(max_length=100, help_text='Nom du lieu')
@@ -30,3 +36,6 @@ class Localisation(models.Model):
 
     class Meta:
         unique_together = ['name', 'details']
+
+    def __str__(self):
+        return "{} {}".format(self.name, self.details)

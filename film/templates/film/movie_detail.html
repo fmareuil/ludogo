@@ -1,5 +1,48 @@
 {% extends "common/base.html" %}
 
 {% block content %}
-{{ form.as_p }}
-{% endblock %}
+<div class="container">
+<div class="card border-primary">
+    <div class="card-header text-center text-white bg-primary"><h1>{{ object.title }}</h1></div>
+    <div class="card-deck pt-3">
+      <div class="card border-info">
+          <div class="card-header text-center text-white bg-info"><h5>synopsis</h5></div>
+          <div class="card-body">{{ object.synposis }}</div>
+      </div>
+      <div class="card border-success">
+          <div class="card-header text-center text-white bg-success"><h5>Localisation</h5></div>
+          <div class="card-title text-center  font-weight-bold">{{ object.localisation.name }}</div>
+          <div class="container card-text">{{ object.localisation.details }}</div>
+      </div>
+    </div>
+    <div class="card-deck pt-3">
+      <div class="card border-info">
+          <div class="card-header text-center text-white bg-info"><h5>Genres</h5></div>
+          <div class="card-body">{% for genre in object.genres.all %} <p class="card-text">{{genre.name}}</p> {% endfor %}</div>
+      </div>
+      <div class="card border-info">
+          <div class="card-header text-center text-white bg-info"><h5>Format</h5></div>
+          <div class="card-body"><p class="card-text">{{object.format}}</p></div>
+      </div>
+      <div class="card border-info">
+          <div class="card-header text-center text-white bg-info"><h5>Langue</h5></div>
+          <div class="card-body"><p class="card-text">{{object.langue}}</p></div>
+      </div>
+    </div>
+    <div class="card-deck pt-3 mb-3">
+        <div class="card border-secondary">
+          <div class="card-header text-center text-white bg-secondary"><h5>Acteurs</h5></div>
+          <div class="card-body">{% for actor in object.actors.all %} <p class="card-text">{{actor}}</p> {% endfor %}</div>
+        </div>
+        <div class="card border-secondary">
+          <div class="card-header text-center text-white bg-secondary"><h5>Réalisateurs</h5></div>
+          <div class="card-body">{% for realisator in object.realisators.all %} <p class="card-text">{{realisator}}</p> {% endfor %}</div>
+        </div>
+        <div class="card border-secondary">
+          <div class="card-header text-center text-white bg-secondary"><h5>Date de réalisation</h5></div>
+          <div class="card-body"><p class="card-text">{{object.date}}</p></div>
+       </div>
+    </div>
+    <a href="#" class="btn btn-warning btn-lg" role="button" aria-pressed="true">Edit</a>
+</div>
+{% endblock content %}

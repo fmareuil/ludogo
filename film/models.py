@@ -8,9 +8,15 @@ class Format(models.Model):
     name = models.CharField(max_length=100, help_text='Nom du format', unique=True)
     description = models.CharField(max_length=100, help_text='Rapide description du format', blank=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Langue(models.Model):
     name = models.CharField(max_length=100, help_text='Nom du format', unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Movie(models.Model):
@@ -26,3 +32,6 @@ class Movie(models.Model):
 
     class Meta:
         unique_together = ['title', 'format', 'langue']
+
+    def __str__(self):
+        return self.title

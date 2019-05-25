@@ -7,5 +7,4 @@ from .forms import MovieForm
 
 class MovieDetailView(generic.DetailView):
     model = Movie
-    form_class = MovieForm
     pk_url_kwarg = 'movie_id'
