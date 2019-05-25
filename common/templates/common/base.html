@@ -20,6 +20,8 @@
   <!-- Boostrap core CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css"
+          href="{% static 'common/css/ludogo.css' %}"/>
   {% endblock stylesheet %}
 </head>
 
@@ -36,10 +38,10 @@
         <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Rechercher un Film</a>
+        <a class="nav-link" href="{% url 'film:search' %}">Rechercher un Film</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Ajouter un nouveau film</a>
+        <a class="nav-link" href="{% url 'film:addnew' %}">Ajouter un nouveau film</a>
       </li>
       <li class="nav-item">
         <a class="nav-link disabled" href="#">Rechercher un Jeu</a>

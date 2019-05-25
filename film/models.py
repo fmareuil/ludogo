@@ -20,7 +20,8 @@ class Langue(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=300, help_text='Titre du film')
+    title = models.CharField(max_length=300, help_text='Titre du film original')
+    french_title = models.CharField(max_length=300, help_text='Titre du film français')
     synopsis = models.TextField(help_text='synopsis du film')
     genres = models.ManyToManyField(Genre, help_text='genres du film')
     date = models.DateTimeField()

@@ -1,0 +1,10 @@
+{% extends "common/base.html" %}
+{% block content %}
+<div class="jumbotron">
+<form action="" method="post">{% csrf_token %}
+    <p>Are you sure you want to delete "{{ object.title }}"?</p>
+    <input class="btn btn-danger" type="submit" value="Confirm" />
+    <button onclick="window.history.back();" class="btn" type="button">Cancel</button>
+</form>
+</div>
+{% endblock content %}
