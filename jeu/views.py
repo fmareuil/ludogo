@@ -47,13 +47,12 @@ class GameCreateView(generic.CreateView):
             title = title.text
         description = soupresult.find('div', attrs={"class":"description"})
         if description:
-            description = description.text.strip('\n')
+            description = description.text.strip('\n').strip('voir plus...')
         listcreat = []
         strongs = soupresult.findAll('strong')
         if not strongs:
             strongs = []
             date = None
-        print(strongs)
         for stro in strongs:
             if stro.text == 'publié':
                 lidates = stro.find_next('ul').find_all('li')
@@ -61,7 +60,6 @@ class GameCreateView(generic.CreateView):
             elif stro.text == 'concepteurs' or stro.text == 'designer' or stro.text == 'concepteur' \
                     or stro.text == 'designers':
                 liconcepteurs = stro.find_next('ul').find_all('li')
-                print(liconcepteurs)
                 for concepteur in liconcepteurs:
                     name = concepteur.find('a').text.strip('\n').strip().split(' ')
                     creat = Person.objects.get_or_create(firstname=' '.join(name[0:-1]), lastname=name[-1])
