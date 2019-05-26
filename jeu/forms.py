@@ -12,7 +12,7 @@ class GameForm(ModelForm):
                 visible.field.widget.attrs['class'] = ''
             else:
                 visible.field.widget.attrs['class'] = 'form-control'
-            if visible.field.label in ['Title', 'Genres', 'Localisation']:
+            if visible.field.label in ['Title', 'Genres', 'Localisation', 'Playersmin', 'Playersmax', 'Creators']:
                 visible.field.required = True
             else:
                 visible.field.required = False

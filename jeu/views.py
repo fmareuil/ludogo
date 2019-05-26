@@ -38,7 +38,55 @@ class GameCreateView(generic.CreateView):
     template_name_suffix = '_update_form'
 
     def get_initial(self):
-        return super(GameCreateView, self).get_initial()
+        import requests
+        from bs4 import BeautifulSoup
+        url = 'https://www.tabletopfinder.eu/fr/boardgame/{}/'.format(self.kwargs['ttf_id'])
+        htmlresult = requests.get(url)
+        soupresult = BeautifulSoup(htmlresult.text)
+        title = soupresult.find('h1')
+        if title:
+            title = title.text
+        description = soupresult.find('div', attrs={"class":"description"})
+        if description:
+            description = description.text.strip('\n')
+        listcreat = []
+        strongs = soupresult.findAll('strong')
+        if not strongs:
+            strongs = []
+            date = None
+        for stro in strongs:
+            if stro.text == 'publié':
+                lidates = stro.find_next('ul').find_all('li')
+                date = int(lidates[0].text.strip('\n').strip())
+            elif stro.text == 'concepteurs':
+                liconcepteurs = stro.find_next('ul').find_all('li')
+                for concepteur in liconcepteurs:
+                    name = concepteur.find('a').text.strip('\n').strip().split(' ')
+                    creat = Person.objects.get_or_create(firstname=' '.join(name[0:-1]), lastname=name[-1])
+                    listcreat.append(creat[0].id)
+        agemin =  soupresult.find('i', attrs={"class":u"fas fa-child"})
+        if agemin:
+            agemin = int(agemin.parent.text.split('\n')[-2].split('+')[0])
+        payload = {'query': title}
+        results = requests.get(URL_REQUEST, params=payload)
+        results = results.json()
+        for result in results['games']:
+            if result['id'] == int(self.kwargs['ttf_id']):
+                playersmin = result['playersMin']
+                playersmax = result['playersMax']
+                timemin = result['timeMin']
+                timemax = result['timeMax']
+                tarif = result['price']
+            else:
+                playersmin = None
+                playersmax = None
+                timemin = None
+                timemax = None
+                tarif = None
+        newgame = {'title': title, 'description': description, 'date': datetime.datetime(date, 1, 1),
+                   'creators':listcreat, 'agemin':agemin, 'playersmin':playersmin, 'playersmax':playersmax,
+                   'timemin':timemin, 'timemax':timemax, 'tarif':tarif}
+        return newgame
 
     def get_success_url(self):
         return reverse_lazy('jeu:detail', kwargs={'game_id':self.object.pk})
@@ -50,7 +98,6 @@ def searchgame(request):
         if newgame:
             payload = {'query': newgame}
             result = requests.get(URL_REQUEST, params=payload)
-            print(result.url)
             result = result.json()
         else:
             result = {'games':[]}
