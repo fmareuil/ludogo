@@ -31,7 +31,7 @@
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="movie" id="movie{{ movie.movieID }}" value="{{ movie.movieID }}">
                 <label class="form-check-label" for="movie{{ movie.movieID }}">
-                  {{ movie.imdb_title }} {{ movie.year }} {% if movie.aka %}{% for aka in movie.aka %}{{aka}}{% endfor %}{% endif %}
+                  {{ movie.imdb_title }} or {{ movie.title }} {{ movie.year }} {% if movie.aka %}{% for aka in movie.aka %}{{aka}}{% endfor %}{% endif %}
                 </label>
             </div>
             <hr>
