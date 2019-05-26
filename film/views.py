@@ -87,17 +87,16 @@ def searchmovie(request):
         movies = []
         for movie in result:
             if movie['kind'] == 'movie':
+                dic_movie = {}
                 if 'aka' in movie:
-                    dic_movie = {'imdb_title': movie['long imdb canonical title'],
-                                 'title': movie['title'],
-                                 'year': movie['year'],
-                                 'aka': movie['aka'],
-                                 'movieID': movie.movieID}
-                else:
-                    dic_movie = {'imdb_title': movie['long imdb canonical title'],
-                                 'title': movie['title'],
-                                 'year': movie['year'],
-                                 'movieID': movie.movieID}
+                    dic_movie['aka'] = movie['aka']
+                if 'long imdb canonical title' in movie:
+                    dic_movie['imdb_title'] = movie['long imdb canonical title']
+                if 'title' in movie:
+                    dic_movie['title'] = movie['title']
+                if 'year' in movie:
+                    dic_movie['year'] = movie['year']
+                dic_movie['movieID'] = movie.movieID
                 movies.append(dic_movie)
         return render(request, 'film/addnew_movie.html', {'movies': movies})
     elif request.method == "POST":
