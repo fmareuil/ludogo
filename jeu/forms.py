@@ -1,7 +1,7 @@
 from django.forms.models import ModelForm
 from django import forms
 from .models import Game
-
+from common.models import Genre
 
 class GameForm(ModelForm):
 
@@ -16,6 +16,7 @@ class GameForm(ModelForm):
                 visible.field.required = True
             else:
                 visible.field.required = False
+        self.fields['genres'].queryset = Genre.objects.filter(type=Genre.TYPE_GAME)
 
     class Meta:
         model = Game

@@ -1,6 +1,7 @@
 from django.forms.models import ModelForm
 from django import forms
 from .models import Movie
+from common.models import Genre
 
 
 class MovieForm(ModelForm):
@@ -13,6 +14,7 @@ class MovieForm(ModelForm):
                 visible.field.required = True
             else:
                 visible.field.required = False
+        self.fields['genres'].queryset = Genre.objects.filter(type=Genre.TYPE_MOVIE)
 
     class Meta:
         model = Movie

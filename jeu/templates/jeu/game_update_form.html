@@ -7,7 +7,6 @@
 {% if form.non_form_errors %}
   <span class="text-danger text-center">{{ form.non_form_errors }}</span>
 {% endif %}
-
 <form method="post">{% csrf_token %}
     <div class="container">
 <div class="card border-primary">
@@ -28,7 +27,7 @@
         {% if form.localisation.errors %}
         <span class="text-danger"> {{ form.localisation.errors }} </span>
         {% endif %}
-          <div class="card-body text-center  font-weight-bold" title="{{form.localisation.details}}">{{ form.localisation }}</div>
+          <div class="card-body text-center font-weight-bold" title="{{form.localisation.details}}">{{ form.localisation }}</div>
       </div>
     </div>
     <div class="card-deck pt-3">
@@ -109,4 +108,15 @@
     </div>
     </div>
 </form>
+{% if messages %}
+<div class="container">
+<div class="card border-primary">
+    <div class="card-body">
+    {% for message in messages %}
+        <p class="card-text">{{ message }}</p>
+    {% endfor %}
+    </div>
+</div>
+</div>
+{% endif %}
 {% endblock content %}
