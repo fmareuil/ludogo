@@ -1,6 +1,5 @@
+# coding=utf-8
 from django.contrib import messages
-
-# Create your views here.
 from django.shortcuts import render, redirect
 from django.views import generic
 from django.db.models import Q

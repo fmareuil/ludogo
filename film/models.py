@@ -1,3 +1,4 @@
+# coding=utf-8
 from django.db import models
 from common.models import Genre, Person, Localisation
 
