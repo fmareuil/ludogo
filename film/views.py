@@ -59,7 +59,10 @@ class MovieCreateView(generic.CreateView):
             listact = []
             for actor in movie['cast']:
                 name = actor['long imdb canonical name'].split(',')
-                ac = Person.objects.get_or_create(firstname=name[1], lastname=name[0])
+                if len(name) > 1:
+                    ac = Person.objects.get_or_create(firstname=name[1], lastname=name[0])
+                else:
+                    ac = Person.objects.get_or_create(firstname='', lastname=name[0])
                 listact.append(ac[0].id)
             newmovie['actors'] = listact
         listreal = []
@@ -67,7 +70,10 @@ class MovieCreateView(generic.CreateView):
             movie['directors'] = []
         for realisator in movie['directors']:
             realname = realisator['long imdb canonical name'].split(',')
-            real = Person.objects.get_or_create(firstname=realname[1], lastname=realname[0])
+            if len(realname) > 1:
+                real = Person.objects.get_or_create(firstname=realname[1], lastname=realname[0])
+            else:
+                real = Person.objects.get_or_create(firstname='', lastname=realname[0])
             listreal.append(real[0].id)
         newmovie['realisators'] = listreal
         return newmovie
