@@ -38,12 +38,19 @@ class MovieCreateView(generic.CreateView):
         ia = imdb.IMDb()
         movie = ia.get_movie(self.kwargs['imdb_id'])
         fraka = get_aka(movie['aka'][0])
+        newmovie = {}
         if 'synopsis' in movie:
-            newmovie = {'synopsis':movie['synopsis'][0], 'title':movie['title'],
-                        'date':datetime.datetime(movie['year'], 1, 1), 'french_title':fraka}
-        else:
-            newmovie = {'title': movie['title'], 'date': datetime.datetime(movie['year'], 1, 1), 'french_title': fraka}
+            newmovie['synopsis'] = movie['synopsis'][0]
+        if 'title' in movie:
+            newmovie['title'] = movie['title']
+        if 'year' in movie:
+            newmovie['date'] = datetime.datetime(movie['year'], 1, 1)
+
+        if fraka:
+            newmovie['french_title'] = fraka
         listg = []
+        if not 'genres' in movie:
+            movie['genres'] = []
         for genre in movie['genres']:
             g = Genre.objects.get_or_create(type=Genre.TYPE_MOVIE, name=genre)
             listg.append(g[0].id)
@@ -56,6 +63,8 @@ class MovieCreateView(generic.CreateView):
                 listact.append(ac[0].id)
             newmovie['actors'] = listact
         listreal = []
+        if not 'directors' in movie:
+            movie['directors'] = []
         for realisator in movie['directors']:
             realname = realisator['long imdb canonical name'].split(',')
             real = Person.objects.get_or_create(firstname=realname[1], lastname=realname[0])
