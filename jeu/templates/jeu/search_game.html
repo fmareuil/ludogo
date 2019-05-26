@@ -1,0 +1,66 @@
+{% extends "common/base.html" %}
+{% block content %}
+<!-- Error message -->
+{% if form.non_field_errors %}
+  <span class="text-danger text-center">{{ form.non_field_errors }}</span>
+{% endif %}
+{% if form.non_form_errors %}
+  <span class="text-danger text-center">{{ form.non_form_errors }}</span>
+{% endif %}
+
+<div class="container">
+<form method="get" action="{% url 'jeu:search' %}">
+    <div class="container">
+    <div class="card border-primary">
+        <div class="card-header text-center text-white bg-primary"><h3>Films à rechercher</h3></div>
+        <div class="card-body">
+        <input class="form-control" id="id_search_field" placeholder="Pattern" type="text" name="search_field" value="">
+        </div>
+        <div class="card-footer md-3">
+            <input class="btn btn-primary btn-xs" type="submit" value="Rechercher">
+            <input class="btn btn-warning btn-xs" type="reset" value="Reset">
+        </div>
+    </div>
+    </div>
+</form>
+{% if game_list %}
+<hr>
+<div class="card" >
+    <div class="card-header text-center font-weight-bold">
+    Liste des Jeux qui match {{ view_search_field }}
+  </div>
+    <div class="card-body">
+<table class="table">
+    <thead class="thead-light">
+        <tr>
+            <th scope="col">Titre</th>
+            <th scope="col">Genres</th>
+            <th scope="col">Nombre de Joueurs min-max</th>
+            <th scope="col">Temps en minutes min-max</th>
+            <th scope="col">Localisation</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for game in game_list %}
+    <tr>
+      <td><a href="{% url 'jeu:detail' game.id %}">{{ game.title }}</a></td>
+      <td>{% for genre in game.genres.all %}{{genre.name}} {% endfor %}</td>
+      <td>{{ game.playersmin }}-{{ game.playersmax }}</td>
+      <td>{{ game.timemin }}-{{ game.timemax }}</td>
+      <td>{{ game.localisation }}</td>
+      <td>
+        <a class="btn btn-link float-right"
+                     href="{% url 'jeu:delete' game.id %}">
+                    <i class="far fa-trash-alt text-danger float-right"></i>
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+    </div>
+</div>
+{% endif %}
+</div>
+{% endblock content %}

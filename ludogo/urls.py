@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^$', HomeView.as_view(), name="home"),
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^movie/', include('film.urls', namespace="film")),
+    url(r'^game/', include('jeu.urls', namespace="jeu")),
 ]

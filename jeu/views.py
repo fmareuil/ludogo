@@ -8,10 +8,11 @@ from .models import Game
 from .forms import GameForm, GameListForm
 from common.models import Genre, Person
 from django.urls import reverse_lazy
+import requests
 
 import imdb
 import datetime
-
+URL_REQUEST = 'https://www.tabletopfinder.eu/query/boardgames/search'
 # Create your views here.
 
 
@@ -47,30 +48,27 @@ def searchgame(request):
     if request.method == "GET":
         newgame = request.GET.get('newgame', None)
         if newgame:
-            result = parse_html_games(newgame)
+            payload = {'query': newgame}
+            result = requests.get(URL_REQUEST, params=payload)
+            print(result.url)
+            result = result.json()
         else:
-            result = []
+            result = {'games':[]}
         games = []
-        for game in result:
-            games.append(game)
+        for game in result['games']:
+            games.append({'title':game['name'],
+                          'gameID':game['id']})
         return render(request, 'jeu/addnew_game.html', {'games': games})
     elif request.method == "POST":
-           return redirect(reverse_lazy('jeu:create', kwargs={'game_id':request.POST['game']}))
+           return redirect(reverse_lazy('jeu:create', kwargs={'ttf_id':request.POST['game']}))
     else:
         return render(request, 'jeu/addnew_game.html')
 
 
-def parse_html_games(name):
-    game = {}
-    dic_game = {'title': game['title'],
-                'year': game['year'],
-                'gameID': game['id']}
-    return dic_game
-
 class GameListView(generic.ListView):
     model = Game
     form_class = GameListForm
-    template_name = 'jeu/search_movie.html'
+    template_name = 'jeu/search_game.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(GameListView,self).get_context_data(**kwargs)

@@ -40,37 +40,63 @@
           <div class="card-body">{{form.genres}}</div>
       </div>
       <div class="card border-info">
-          <div class="card-header text-center text-white bg-info"><h5>Format</h5></div>
-        {% if form.format.errors %}
-        <span class="text-danger"> {{ form.format.errors }} </span>
+          <div class="card-header text-center text-white bg-info"><h5>Nombre de joueurs</h5></div>
+        {% if form.playermax.errors %}
+        <span class="text-danger"> {{ form.playermax.errors }} </span>
         {% endif %}
-          <div class="card-body"><p class="card-text">{{form.format}}</p></div>
+          {% if form.playermin.errors %}
+        <span class="text-danger"> {{ form.playermin.errors }} </span>
+        {% endif %}
+          <div class="card-body">
+              <p class="card-text">Maximum</p>
+              <p class="card-text">{{form.playersmax}}</p>
+              <p class="card-text">Minimum</p>
+              <p class="card-text">{{form.playersmin}}</p>
+          </div>
       </div>
       <div class="card border-info">
-          <div class="card-header text-center text-white bg-info"><h5>Langue</h5></div>
-        {% if form.langue.errors %}
-        <span class="text-danger"> {{ form.langue.errors }} </span>
+          <div class="card-header text-center text-white bg-info"><h5>Temps de Jeu en mintues</h5></div>
+        {% if form.timemin.errors %}
+        <span class="text-danger"> {{ form.timemin.errors }} </span>
         {% endif %}
-          <div class="card-body"><p class="card-text">{{form.langue}}</p></div>
+          <div class="card-body">
+              <p class="card-text">Minimum</p>
+              <p class="card-text">{{form.timemin}}</p>
+              <p class="card-text">Maximum</p>
+              <p class="card-text">{{form.timemax}}</p>
+          </div>
       </div>
     </div>
     <div class="card-deck pt-3 mb-3">
         <div class="card border-secondary">
-          <div class="card-header text-center text-white bg-secondary"><h5>Acteurs</h5></div>
-        {% if form.actors.errors %}
-        <span class="text-danger"> {{ form.actors.errors }} </span>
+          <div class="card-header text-center text-white bg-secondary"><h5>Créateurs</h5></div>
+        {% if form.creators.errors %}
+        <span class="text-danger"> {{ form.creators.errors }} </span>
         {% endif %}
-          <div class="card-body">{{form.actors}}</div>
+          <div class="card-body">{{form.creators}}</div>
         </div>
         <div class="card border-secondary">
-          <div class="card-header text-center text-white bg-secondary"><h5>Réalisateurs</h5></div>
-         {% if form.realisators.errors %}
-        <span class="text-danger"> {{ form.realisators.errors }} </span>
+          <div class="card-header text-center text-white bg-secondary"><h5>Autres informations</h5></div>
+         {% if form.agmin.errors %}
+        <span class="text-danger"> {{ form.agemin.errors }} </span>
         {% endif %}
-          <div class="card-body">{{form.realisators}}</div>
-        </div>
+            {% if form.tarif.errors %}
+        <span class="text-danger"> {{ form.tarif.errors }} </span>
+        {% endif %}
+            {% if form.agmin.errors %}
+        <span class="text-danger"> {{ form.extension.errors }} </span>
+        {% endif %}
+          <div class="card-body">
+              <p class="card-text">Age Minimum</p>
+              <p class="card-text">{{form.agemin}}</p>
+              <p class="card-text">Tarif</p>
+              <p class="card-text">{{form.tarif}}</p>
+              <p class="card-text">C'est une extension</p>
+              <p class="card-text">{{form.extension}}</p>
+          </div>
+          </div>
         <div class="card border-secondary">
-          <div class="card-header text-center text-white bg-secondary"><h5>Date de sortie</h5></div>
+          <div class="card-header text-center text-white bg-secondary"><h5>Date de publication</h5></div>
         {% if form.date.errors %}
         <span class="text-danger"> {{ form.date.errors }} </span>
         {% endif %}

@@ -12,15 +12,13 @@ class Game(models.Model):
     creators = models.ManyToManyField(Person, help_text='createurs du jeu', related_name='creators')
     tarif = models.FloatField()
     localisation = models.ForeignKey(Localisation, help_text="lieu où est le film", on_delete=models.DO_NOTHING)
+    playersmin = models.IntegerField(help_text='Nombre de joueurs minimum')
+    playersmax = models.IntegerField(help_text='Nombre de joueurs maximum')
+    timemin = models.IntegerField(help_text='temps de jeu minimum')
+    timemax = models.IntegerField(help_text='temps de jeu maximum')
+    agemin = models.IntegerField(help_text='age minimum')
+    extension = models.BooleanField(default=False, help_text="Est ce que ce jeu est une extension d'un autre?")
 
-    def __str__(self):
-        return self.title
-
-
-class Extension(models.Model):
-    game = models.ForeignKey(Game, help_text="Jeu d'origine", on_delete=models.CASCADE)
-    title = models.CharField(max_length=100, help_text="Nom de l'extension")
-    description = models.CharField(max_length=100, help_text="description de l'extension", blank=True)
 
     def __str__(self):
         return self.title
