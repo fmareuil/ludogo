@@ -38,56 +38,59 @@ class GameCreateView(generic.CreateView):
     template_name_suffix = '_update_form'
 
     def get_initial(self):
-        url = URL_HTML.format(self.kwargs['ttf_id'])
-        htmlresult = requests.get(url)
-        soupresult = BeautifulSoup(htmlresult.text)
-        title = soupresult.find('h1')
-        if title:
-            title = title.text
-        description = soupresult.find('div', attrs={"class":"description"})
-        if description:
-            description = description.text.strip('\n').strip('voir plus...')
-        listcreat = []
-        strongs = soupresult.findAll('strong')
-        if not strongs:
-            strongs = []
-            date = None
-        for stro in strongs:
-            if stro.text == 'publié':
-                lidates = stro.find_next('ul').find_all('li')
-                date = int(lidates[0].text.strip('\n').strip())
-            elif stro.text == 'concepteurs' or stro.text == 'designer' or stro.text == 'concepteur' \
-                    or stro.text == 'designers':
-                liconcepteurs = stro.find_next('ul').find_all('li')
-                for concepteur in liconcepteurs:
-                    name = concepteur.find('a').text.strip('\n').strip().split(' ')
-                    creat = Person.objects.get_or_create(firstname=' '.join(name[0:-1]), lastname=name[-1])
-                    listcreat.append(creat[0].id)
-        agemin = soupresult.find('i', attrs={"class":u"fas fa-child"})
-        if agemin:
-            agemin = int(agemin.parent.text.split('\n')[-2].split('+')[0])
-        payload = {'query': title}
-        results = requests.get(URL_REQUEST, params=payload)
-        results = results.json()
-        playersmin = None
-        playersmax = None
-        timemin = None
-        timemax = None
-        tarif = None
-        for result in results['games']:
-            if result['id'] == int(self.kwargs['ttf_id']):
-                playersmin = result['playersMin']
-                playersmax = result['playersMax']
-                timemin = result['timeMin']
-                timemax = result['timeMax']
-                tarif = result['price']
-        urls = [url, "{}?query='{}'".format(URL_REQUEST, title)]
-        newgame = {'title': title, 'description': description, 'date': datetime.datetime(date, 1, 1),
-                   'creators':listcreat, 'agemin':agemin, 'playersmin':playersmin, 'playersmax':playersmax,
-                   'timemin':timemin, 'timemax':timemax, 'tarif':tarif}
-        messages.add_message(self.request, messages.INFO, "Pour plus d'information vous pouvez regarder :")
-        messages.add_message(self.request, messages.INFO, '{}'.format(urls[0]))
-        messages.add_message(self.request, messages.INFO, '{}'.format(urls[1]))
+        if self.kwargs['ttf_id'] != 'empty':
+            url = URL_HTML.format(self.kwargs['ttf_id'])
+            htmlresult = requests.get(url)
+            soupresult = BeautifulSoup(htmlresult.text)
+            title = soupresult.find('h1')
+            if title:
+                title = title.text
+            description = soupresult.find('div', attrs={"class":"description"})
+            if description:
+                description = description.text.strip('\n').strip('voir plus...')
+            listcreat = []
+            strongs = soupresult.findAll('strong')
+            if not strongs:
+                strongs = []
+                date = None
+            for stro in strongs:
+                if stro.text == 'publié':
+                    lidates = stro.find_next('ul').find_all('li')
+                    date = int(lidates[0].text.strip('\n').strip())
+                elif stro.text == 'concepteurs' or stro.text == 'designer' or stro.text == 'concepteur' \
+                        or stro.text == 'designers':
+                    liconcepteurs = stro.find_next('ul').find_all('li')
+                    for concepteur in liconcepteurs:
+                        name = concepteur.find('a').text.strip('\n').strip().split(' ')
+                        creat = Person.objects.get_or_create(firstname=' '.join(name[0:-1]), lastname=name[-1])
+                        listcreat.append(creat[0].id)
+            agemin = soupresult.find('i', attrs={"class":u"fas fa-child"})
+            if agemin:
+                agemin = int(agemin.parent.text.split('\n')[-2].split('+')[0])
+            payload = {'query': title}
+            results = requests.get(URL_REQUEST, params=payload)
+            results = results.json()
+            playersmin = None
+            playersmax = None
+            timemin = None
+            timemax = None
+            tarif = None
+            for result in results['games']:
+                if result['id'] == int(self.kwargs['ttf_id']):
+                    playersmin = result['playersMin']
+                    playersmax = result['playersMax']
+                    timemin = result['timeMin']
+                    timemax = result['timeMax']
+                    tarif = result['price']
+            urls = [url, "{}?query='{}'".format(URL_REQUEST, title)]
+            newgame = {'title': title, 'description': description, 'date': datetime.datetime(date, 1, 1),
+                       'creators':listcreat, 'agemin':agemin, 'playersmin':playersmin, 'playersmax':playersmax,
+                       'timemin':timemin, 'timemax':timemax, 'tarif':tarif}
+            messages.add_message(self.request, messages.INFO, "Pour plus d'information vous pouvez regarder :")
+            messages.add_message(self.request, messages.INFO, '{}'.format(urls[0]))
+            messages.add_message(self.request, messages.INFO, '{}'.format(urls[1]))
+        else:
+            newgame = {}
         return newgame
 
     def get_success_url(self):
@@ -109,7 +112,10 @@ def searchgame(request):
                           'gameID':game['id']})
         return render(request, 'jeu/addnew_game.html', {'games': games})
     elif request.method == "POST":
+        if 'game' in request.POST:
            return redirect(reverse_lazy('jeu:create', kwargs={'ttf_id':request.POST['game']}))
+        else:
+           return redirect(reverse_lazy('jeu:create', kwargs={'ttf_id': 'empty'}))
     else:
         return render(request, 'jeu/addnew_game.html')
 

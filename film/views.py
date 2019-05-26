@@ -35,47 +35,50 @@ class MovieCreateView(generic.CreateView):
     template_name_suffix = '_update_form'
 
     def get_initial(self):
-        ia = imdb.IMDb()
-        movie = ia.get_movie(self.kwargs['imdb_id'])
-        fraka = get_aka(movie['aka'][0])
-        newmovie = {}
-        if 'synopsis' in movie:
-            newmovie['synopsis'] = movie['synopsis'][0]
-        if 'title' in movie:
-            newmovie['title'] = movie['title']
-        if 'year' in movie:
-            newmovie['date'] = datetime.datetime(movie['year'], 1, 1)
+        if self.kwargs['imdb_id'] != 'empty':
+            ia = imdb.IMDb()
+            movie = ia.get_movie(self.kwargs['imdb_id'])
+            fraka = get_aka(movie['aka'][0])
+            newmovie = {}
+            if 'synopsis' in movie:
+                newmovie['synopsis'] = movie['synopsis'][0]
+            if 'title' in movie:
+                newmovie['title'] = movie['title']
+            if 'year' in movie:
+                newmovie['date'] = datetime.datetime(movie['year'], 1, 1)
 
-        if fraka:
-            newmovie['french_title'] = fraka
-        listg = []
-        if not 'genres' in movie:
-            movie['genres'] = []
-        for genre in movie['genres']:
-            g = Genre.objects.get_or_create(type=Genre.TYPE_MOVIE, name=genre)
-            listg.append(g[0].id)
-        newmovie['genres'] = listg
-        if 'cast' in movie:
-            listact = []
-            for actor in movie['cast']:
-                name = actor['long imdb canonical name'].split(',')
-                if len(name) > 1:
-                    ac = Person.objects.get_or_create(firstname=name[1], lastname=name[0])
+            if fraka:
+                newmovie['french_title'] = fraka
+            listg = []
+            if not 'genres' in movie:
+                movie['genres'] = []
+            for genre in movie['genres']:
+                g = Genre.objects.get_or_create(type=Genre.TYPE_MOVIE, name=genre)
+                listg.append(g[0].id)
+            newmovie['genres'] = listg
+            if 'cast' in movie:
+                listact = []
+                for actor in movie['cast'][0:6]:
+                    name = actor['long imdb canonical name'].split(',')
+                    if len(name) > 1:
+                        ac = Person.objects.get_or_create(firstname=name[1], lastname=name[0])
+                    else:
+                        ac = Person.objects.get_or_create(firstname='', lastname=name[0])
+                    listact.append(ac[0].id)
+                newmovie['actors'] = listact
+            listreal = []
+            if not 'directors' in movie:
+                movie['directors'] = []
+            for realisator in movie['directors']:
+                realname = realisator['long imdb canonical name'].split(',')
+                if len(realname) > 1:
+                    real = Person.objects.get_or_create(firstname=realname[1], lastname=realname[0])
                 else:
-                    ac = Person.objects.get_or_create(firstname='', lastname=name[0])
-                listact.append(ac[0].id)
-            newmovie['actors'] = listact
-        listreal = []
-        if not 'directors' in movie:
-            movie['directors'] = []
-        for realisator in movie['directors']:
-            realname = realisator['long imdb canonical name'].split(',')
-            if len(realname) > 1:
-                real = Person.objects.get_or_create(firstname=realname[1], lastname=realname[0])
-            else:
-                real = Person.objects.get_or_create(firstname='', lastname=realname[0])
-            listreal.append(real[0].id)
-        newmovie['realisators'] = listreal
+                    real = Person.objects.get_or_create(firstname='', lastname=realname[0])
+                listreal.append(real[0].id)
+            newmovie['realisators'] = listreal
+        else:
+            newmovie = {}
         return newmovie
 
     def get_success_url(self):
@@ -94,19 +97,22 @@ def searchmovie(request):
         for movie in result:
             if movie['kind'] == 'movie':
                 dic_movie = {}
-                if 'aka' in movie:
+                if 'aka' in movie.keys():
                     dic_movie['aka'] = movie['aka']
-                if 'long imdb canonical title' in movie:
+                if 'long imdb canonical title' in movie.keys():
                     dic_movie['imdb_title'] = movie['long imdb canonical title']
-                if 'title' in movie:
+                if 'title' in movie.keys():
                     dic_movie['title'] = movie['title']
-                if 'year' in movie:
+                if 'year' in movie.keys():
                     dic_movie['year'] = movie['year']
                 dic_movie['movieID'] = movie.movieID
                 movies.append(dic_movie)
         return render(request, 'film/addnew_movie.html', {'movies': movies})
     elif request.method == "POST":
-           return redirect(reverse_lazy('film:create', kwargs={'imdb_id':request.POST['movie']}))
+        if 'movie' in request.POST:
+            return redirect(reverse_lazy('film:create', kwargs={'imdb_id':request.POST['movie']}))
+        else:
+            return redirect(reverse_lazy('film:create', kwargs={'imdb_id': 'empty'}))
     else:
         return render(request, 'film/addnew_movie.html')
 
