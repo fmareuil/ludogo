@@ -23,5 +23,6 @@ class MovieForm(ModelForm):
             'genres': forms.SelectMultiple,
         }
 
+
 class MovieListForm(ModelForm):
     search_field = forms.CharField(max_length=250)

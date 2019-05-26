@@ -1,0 +1,86 @@
+{% extends "common/base.html" %}
+{% block content %}
+<!-- Error message -->
+{% if form.non_field_errors %}
+  <span class="text-danger text-center">{{ form.non_field_errors }}</span>
+{% endif %}
+{% if form.non_form_errors %}
+  <span class="text-danger text-center">{{ form.non_form_errors }}</span>
+{% endif %}
+
+<form method="post">{% csrf_token %}
+    <div class="container">
+<div class="card border-primary">
+    <div class="card-header text-center text-white bg-primary"><h1>{{ form.title }}</h1></div>
+    {% if form.title.errors %}
+        <span class="text-danger"> {{ form.title.errors }} </span>
+      {% endif %}
+    <div class="card-deck pt-3">
+      <div class="card border-info">
+          <div class="card-header text-center text-white bg-info"><h5>description</h5></div>
+        {% if form.description.errors %}
+        <span class="text-danger"> {{ form.description.errors }} </span>
+        {% endif %}
+          <div class="card-body">{{ form.description }}</div>
+      </div>
+      <div class="card border-success">
+          <div class="card-header text-center text-white bg-success"><h5>Localisation</h5></div>
+        {% if form.localisation.errors %}
+        <span class="text-danger"> {{ form.localisation.errors }} </span>
+        {% endif %}
+          <div class="card-body text-center  font-weight-bold" title="{{form.localisation.details}}">{{ form.localisation }}</div>
+      </div>
+    </div>
+    <div class="card-deck pt-3">
+      <div class="card border-info">
+          <div class="card-header text-center text-white bg-info"><h5>Genres</h5></div>
+        {% if form.genres.errors %}
+        <span class="text-danger"> {{ form.genres.errors }} </span>
+        {% endif %}
+          <div class="card-body">{{form.genres}}</div>
+      </div>
+      <div class="card border-info">
+          <div class="card-header text-center text-white bg-info"><h5>Format</h5></div>
+        {% if form.format.errors %}
+        <span class="text-danger"> {{ form.format.errors }} </span>
+        {% endif %}
+          <div class="card-body"><p class="card-text">{{form.format}}</p></div>
+      </div>
+      <div class="card border-info">
+          <div class="card-header text-center text-white bg-info"><h5>Langue</h5></div>
+        {% if form.langue.errors %}
+        <span class="text-danger"> {{ form.langue.errors }} </span>
+        {% endif %}
+          <div class="card-body"><p class="card-text">{{form.langue}}</p></div>
+      </div>
+    </div>
+    <div class="card-deck pt-3 mb-3">
+        <div class="card border-secondary">
+          <div class="card-header text-center text-white bg-secondary"><h5>Acteurs</h5></div>
+        {% if form.actors.errors %}
+        <span class="text-danger"> {{ form.actors.errors }} </span>
+        {% endif %}
+          <div class="card-body">{{form.actors}}</div>
+        </div>
+        <div class="card border-secondary">
+          <div class="card-header text-center text-white bg-secondary"><h5>Réalisateurs</h5></div>
+         {% if form.realisators.errors %}
+        <span class="text-danger"> {{ form.realisators.errors }} </span>
+        {% endif %}
+          <div class="card-body">{{form.realisators}}</div>
+        </div>
+        <div class="card border-secondary">
+          <div class="card-header text-center text-white bg-secondary"><h5>Date de sortie</h5></div>
+        {% if form.date.errors %}
+        <span class="text-danger"> {{ form.date.errors }} </span>
+        {% endif %}
+          <div class="card-body"><p class="card-text">{{form.date}}</p></div>
+       </div>
+    </div>
+    <div class="card-footer">
+        <input class="btn btn-primary btn-xs" type="submit" value="Sauver">
+        <input class="btn btn-warning btn-xs" type="reset" value="Reset">
+    </div>
+    </div>
+</form>
+{% endblock content %}
