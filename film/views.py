@@ -11,10 +11,10 @@ import datetime
 
 # Create your views here.
 
+
 class MovieDetailView(generic.DetailView):
     model = Movie
     pk_url_kwarg = 'movie_id'
-
 
 
 class MovieUpdateView(generic.UpdateView):
@@ -32,7 +32,6 @@ class MovieCreateView(generic.CreateView):
     model = Movie
     form_class = MovieForm
     template_name_suffix = '_update_form'
-
 
     def get_initial(self):
         ia = imdb.IMDb()
@@ -68,28 +67,31 @@ class MovieCreateView(generic.CreateView):
 
 
 def searchmovie(request):
-    if request.method == "POST":
-        if 'newmovie' in request.POST:
-            ia = imdb.IMDb()
-            result = ia.search_movie(request.POST['newmovie'])
-            movies = []
-            for movie in result:
-                if movie['kind'] == 'movie':
-                    if 'aka' in movie:
-                        dic_movie = {'imdb_title': movie['long imdb canonical title'],
-                                     'title': movie['title'],
-                                     'year': movie['year'],
-                                     'aka': movie['aka'],
-                                     'movieID': movie.movieID}
-                    else:
-                        dic_movie = {'imdb_title': movie['long imdb canonical title'],
-                                     'title': movie['title'],
-                                     'year': movie['year'],
-                                     'movieID': movie.movieID}
-                    movies.append(dic_movie)
-            return render(request, 'film/listnew_movies.html', {'movies': movies})
-        elif 'movie' in request.POST:
-            return redirect(reverse_lazy('film:create', kwargs={'imdb_id':request.POST['movie']}))
+    if request.method == "GET":
+        ia = imdb.IMDb()
+        newmovie = request.GET.get('newmovie', None)
+        if newmovie:
+            result = ia.search_movie(newmovie)
+        else:
+            result = []
+        movies = []
+        for movie in result:
+            if movie['kind'] == 'movie':
+                if 'aka' in movie:
+                    dic_movie = {'imdb_title': movie['long imdb canonical title'],
+                                 'title': movie['title'],
+                                 'year': movie['year'],
+                                 'aka': movie['aka'],
+                                 'movieID': movie.movieID}
+                else:
+                    dic_movie = {'imdb_title': movie['long imdb canonical title'],
+                                 'title': movie['title'],
+                                 'year': movie['year'],
+                                 'movieID': movie.movieID}
+                movies.append(dic_movie)
+        return render(request, 'film/addnew_movie.html', {'movies': movies})
+    elif request.method == "POST":
+           return redirect(reverse_lazy('film:create', kwargs={'imdb_id':request.POST['movie']}))
     else:
         return render(request, 'film/addnew_movie.html')
 
@@ -116,9 +118,13 @@ class MovieListView(generic.ListView):
     def get_queryset(self):
         pattern = self.request.GET.get('search_field',None)
         if pattern:
-            object_list = self.model.objects.filter(Q(title__icontains=pattern) | Q(actors__firstname__icontains=pattern) |
-                                                    Q(actors__lastname__icontains=pattern) | Q(genres__name__icontains=pattern) |
-                                                    Q(french_title__icontains=pattern)).distinct()
+            object_list = self.model.objects.filter(Q(title__icontains=pattern) |
+                                                    Q(actors__firstname__icontains=pattern) |
+                                                    Q(actors__lastname__icontains=pattern) |
+                                                    Q(genres__name__icontains=pattern) |
+                                                    Q(french_title__icontains=pattern) |
+                                                    Q(realisators__firstname__icontains=pattern) |
+                                                    Q(realisators__firstname__icontains=pattern)).distinct()
         else:
             object_list = []
         return object_list
