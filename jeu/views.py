@@ -144,7 +144,7 @@ class GameListView(generic.ListView):
                                                  Q(genres__name__icontains=pat)).distinct()
             object_list = object_list | list
         if timetoplay:
-            list = self.model.objects.filter(timemax__gte=int(timetoplay), timemin__lte=int(timetoplay))
+            list = self.model.objects.filter(timemax__lte=int(timetoplay))
             object_list = object_list | list
         if nbplayer:
             list = self.model.objects.filter(playersmax__gte=int(nbplayer), playersmin__lte=int(nbplayer))
