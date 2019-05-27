@@ -40,8 +40,10 @@ class GameCreateView(generic.CreateView):
     def get_initial(self):
         storage = messages.get_messages(self.request)
         storage.used = True
-        if len(storage._loaded_messages) == 1: 
+        if len(storage._loaded_messages) == 3: 
             del storage._loaded_messages[0]
+            del storage._loaded_messages[1]
+            del storage._loaded_messages[2]
         if self.kwargs['ttf_id'] != 'empty':
             url = URL_HTML.format(self.kwargs['ttf_id'])
             htmlresult = requests.get(url)
