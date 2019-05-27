@@ -24,7 +24,7 @@ class GameDetailView(generic.DetailView):
 class GameUpdateView(generic.UpdateView):
     model = Game
     form_class = GameForm
-    pk_url_kwarg = 'Game_id'
+    pk_url_kwarg = 'game_id'
     template_name_suffix = '_update_form'
     success_url = reverse_lazy("jeu:detail")
 
