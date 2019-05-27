@@ -111,9 +111,15 @@ def searchgame(request):
     if request.method == "GET":
         newgame = request.GET.get('newgame', None)
         if newgame:
-            payload = {'query': newgame.replace(' ','+').lower()}
+            payload = {'query': newgame.replace(' ','+').lower(),'page':1}
             result = requests.get(URL_REQUEST, params=payload)
             result = result.json()
+            payload = {'query': newgame.replace(' ','+').lower(),'page':2}
+            result2 = requests.get(URL_REQUEST, params=payload)
+            result2 = result2.json()
+            if result != result2:
+                for r in result2['games']:
+                    result['games'].append(r)
         else:
             result = {'games':[]}
         games = []
