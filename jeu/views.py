@@ -76,7 +76,7 @@ class GameCreateView(generic.CreateView):
             tarif = None
             pages = range(1,10)
             for page in pages:
-                payload = {'query': title, 'page':page}
+                payload = {'query': title.replace(' ','+').lower(), 'page':page}
                 results = requests.get(URL_REQUEST, params=payload)
                 results = results.json()
                 for result in results['games']:
@@ -87,7 +87,7 @@ class GameCreateView(generic.CreateView):
                         timemax = result['timeMax']
                         tarif = result['price']
                         break
-            urls = [url, "{}?query='{}'?page={}".format(URL_REQUEST, title,page)]
+            urls = [url, "{}?query='{}'?page={}".format(URL_REQUEST, title.replace(' ','+').lower(), page)]
             newgame = {'title': title, 'description': description, 'date': datetime.datetime(date, 1, 1),
                        'creators':listcreat, 'agemin':agemin, 'playersmin':playersmin, 'playersmax':playersmax,
                        'timemin':timemin, 'timemax':timemax, 'tarif':tarif}
@@ -106,7 +106,7 @@ def searchgame(request):
     if request.method == "GET":
         newgame = request.GET.get('newgame', None)
         if newgame:
-            payload = {'query': newgame}
+            payload = {'query': newgame.replace(' ','+').lower()}
             result = requests.get(URL_REQUEST, params=payload)
             result = result.json()
         else:
