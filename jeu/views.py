@@ -87,7 +87,7 @@ class GameCreateView(generic.CreateView):
                         timemax = result['timeMax']
                         tarif = result['price']
                         break
-            urls = [url, "{}?query='{}'?page={}".format(URL_REQUEST, title.replace(' ','+').lower(), page)]
+            urls = [url, "{}?query={}&page={}".format(URL_REQUEST, title.replace(' ','+').lower(), page)]
             newgame = {'title': title, 'description': description, 'date': datetime.datetime(date, 1, 1),
                        'creators':listcreat, 'agemin':agemin, 'playersmin':playersmin, 'playersmax':playersmax,
                        'timemin':timemin, 'timemax':timemax, 'tarif':tarif}
