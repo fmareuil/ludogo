@@ -1,42 +1,37 @@
 {% extends "common/base.html" %}
-
+{% load static %}
 {% block content %}
-<div class="container">
-    <div class="card">
-        <div class="card-deck pt-4">
+    <div class="card-body">
+        <div class="card-deck pt-2" >
 
-            <div class="card border-info">
+            <div class="card border-success">
                 <a href="{% url 'film:addnew' %}">
-                    <div class="card-header text-center text-white bg-info"><h3>Ajouter un nouveau film</h3></div>
-                    <img class="card-img-top" src="..." alt="Card image cap"/>
-                    <div class="card-body"></div>
+                    <div class="card-header text-center text-white bg-success"><h3>Ajouter un nouveau film</h3></div>
+                        <img class="card-img-top" src="{% static 'common/images/add_movie.png' %}" alt="add movie"/>
                 </a>
             </div>
-            <div class="card border-info">
+            <div class="card border-success">
                 <a href="{% url 'jeu:addnew' %}">
-                    <div class="card-header text-center text-white bg-info"><h3>Ajouter un nouveau jeu</h3></div>
-                    <img class="card-img-top" src="..." alt="Card image cap">
+                    <div class="card-header text-center text-white bg-success"><h3>Ajouter un nouveau jeu</h3></div>
+                    <img class="card-img-top" src="{% static 'common/images/add_game.png' %}" alt="add game">
                     <div class="card-body"></div>
 
                 </a>
             </div>
-        </div>
-        <div class="card-deck pt-4">
 
             <div class="card border-info">
                 <a href="{% url 'film:search' %}">
                     <div class="card-header text-center text-white bg-info"><h3>Chercher un film</h3></div>
-                    <img class="card-img-top" src="..." alt="Card image cap">
+                    <img class="card-img-top"  src="{% static 'common/images/search_movie.png' %}" alt="search movie">
                     <div class="card-body"></div>
                 </a>
             </div>
             <div class="card border-info">
                 <a href="{% url 'jeu:search' %}">
                     <div class="card-header text-center text-white bg-info"><h3>Chercher un jeu</h3></div>
-                    <img class="card-img-top" src="..." alt="Card image cap">
+                    <img class="card-img-top" src="{% static 'common/images/search_game.png' %}" alt="search game">
                     <div class="card-body"></div>
                 </a>
             </div>
         </div>
-    </div>
 {% endblock %}

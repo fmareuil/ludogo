@@ -9,8 +9,8 @@
         content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="Ludogo site"/>
   <meta name="author" content="Fabien Mareuil"/>
-  <link rel="icon" href="{% static 'common/images/favicon.ico' %}"
-        type="image/x-icon">
+  <link rel="shortcut icon" href="{% static 'common/images/ludogo_icon.png' %}"
+        type="image/png">
   <meta http-equiv="content-type" content="text/html;"/>  
   {% block stylesheet %}
   <!-- Font Awesome -->
@@ -28,14 +28,16 @@
 <body>
 {% block header %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Ludogo</a>
+  <a class="navbar-brand" href="{% url 'home' %}">
+    <img src="{% static 'common/images/ludogo_icon.png' %}" width="30" height="30" alt="Ludogo">
+  </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item active">
-        <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="{% url 'home' %}">Ludogo</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{% url 'film:search' %}">Rechercher un Film</a>
