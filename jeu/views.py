@@ -38,6 +38,8 @@ class GameCreateView(generic.CreateView):
     template_name_suffix = '_update_form'
 
     def get_initial(self):
+        storage = messages.get_messages(self.request)
+        storage.used = True
         if self.kwargs['ttf_id'] != 'empty':
             url = URL_HTML.format(self.kwargs['ttf_id'])
             htmlresult = requests.get(url)
@@ -67,22 +69,25 @@ class GameCreateView(generic.CreateView):
             agemin = soupresult.find('i', attrs={"class":u"fas fa-child"})
             if agemin:
                 agemin = int(agemin.parent.text.split('\n')[-2].split('+')[0])
-            payload = {'query': title}
-            results = requests.get(URL_REQUEST, params=payload)
-            results = results.json()
             playersmin = None
             playersmax = None
             timemin = None
             timemax = None
             tarif = None
-            for result in results['games']:
-                if result['id'] == int(self.kwargs['ttf_id']):
-                    playersmin = result['playersMin']
-                    playersmax = result['playersMax']
-                    timemin = result['timeMin']
-                    timemax = result['timeMax']
-                    tarif = result['price']
-            urls = [url, "{}?query='{}'".format(URL_REQUEST, title)]
+            pages = range(1,10)
+            for page in pages:
+                payload = {'query': title, 'page':page}
+                results = requests.get(URL_REQUEST, params=payload)
+                results = results.json()
+                for result in results['games']:
+                    if result['id'] == int(self.kwargs['ttf_id']):
+                        playersmin = result['playersMin']
+                        playersmax = result['playersMax']
+                        timemin = result['timeMin']
+                        timemax = result['timeMax']
+                        tarif = result['price']
+                        break
+            urls = [url, "{}?query='{}'?page={}".format(URL_REQUEST, title,page)]
             newgame = {'title': title, 'description': description, 'date': datetime.datetime(date, 1, 1),
                        'creators':listcreat, 'agemin':agemin, 'playersmin':playersmin, 'playersmax':playersmax,
                        'timemin':timemin, 'timemax':timemax, 'tarif':tarif}
