@@ -75,6 +75,7 @@ class GameCreateView(generic.CreateView):
             timemax = None
             tarif = None
             pages = range(1,10)
+            exit = False
             for page in pages:
                 payload = {'query': title.replace(' ','+').lower(), 'page':page}
                 results = requests.get(URL_REQUEST, params=payload)
@@ -86,7 +87,11 @@ class GameCreateView(generic.CreateView):
                         timemin = result['timeMin']
                         timemax = result['timeMax']
                         tarif = result['price']
+                        exit = True
+                    if exit:
                         break
+                if exit:
+                    break
             urls = [url, "{}?query={}&page={}".format(URL_REQUEST, title.replace(' ','+').lower(), page)]
             newgame = {'title': title, 'description': description, 'date': datetime.datetime(date, 1, 1),
                        'creators':listcreat, 'agemin':agemin, 'playersmin':playersmin, 'playersmax':playersmax,
