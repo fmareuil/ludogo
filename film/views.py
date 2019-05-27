@@ -138,16 +138,18 @@ class MovieListView(generic.ListView):
 
     def get_queryset(self):
         pattern = self.request.GET.get('search_field',None)
+        object_list = self.model.objects.none()
         if pattern:
-            object_list = self.model.objects.filter(Q(title__icontains=pattern) |
-                                                    Q(actors__firstname__icontains=pattern) |
-                                                    Q(actors__lastname__icontains=pattern) |
-                                                    Q(genres__name__icontains=pattern) |
-                                                    Q(french_title__icontains=pattern) |
-                                                    Q(realisators__firstname__icontains=pattern) |
-                                                    Q(realisators__firstname__icontains=pattern)).distinct()
-        else:
-            object_list = []
+            patterns = pattern.split()
+            for pat in patterns:
+                list = self.model.objects.filter(Q(title__icontains=pat) |
+                                                 Q(actors__firstname__icontains=pat) |
+                                                 Q(actors__lastname__icontains=pat) |
+                                                 Q(genres__name__icontains=pat) |
+                                                 Q(french_title__icontains=pat) |
+                                                 Q(realisators__firstname__icontains=pat) |
+                                                 Q(realisators__firstname__icontains=pat)).distinct()
+            object_list = object_list | list
         return object_list
 
 

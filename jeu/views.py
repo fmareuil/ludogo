@@ -132,13 +132,27 @@ class GameListView(generic.ListView):
 
     def get_queryset(self):
         pattern = self.request.GET.get('search_field',None)
+        timemax = self.request.GET.get('max_time',None)
+        playermax = self.request.GET.get('max_play',None)
+        playermin = self.request.GET.get('min_play',None)
+        object_list = self.model.objects.none()
         if pattern:
-            object_list = self.model.objects.filter(Q(title__icontains=pattern) |
-                                                    Q(creators__firstname__icontains=pattern) |
-                                                    Q(creators__lastname__icontains=pattern) |
-                                                    Q(genres__name__icontains=pattern)).distinct()
-        else:
-            object_list = []
+            patterns = pattern.split()
+            for pat in patterns:
+                list = self.model.objects.filter(Q(title__icontains=pat) |
+                                                 Q(creators__firstname__icontains=pat) |
+                                                 Q(creators__lastname__icontains=pat) |
+                                                 Q(genres__name__icontains=pat)).distinct()
+            object_list = object_list | list
+        if timemax:
+            list = self.model.objects.filter(timemax__gte=int(timemax))
+            object_list = object_list | list
+        if playermax:
+            list = self.model.objects.filter(playersmax__gte=int(playermax))
+            object_list = object_list | list
+        if playermin:
+            list = self.model.objects.filter(playersmin__lte=int(playermin))
+            object_list = object_list | list
         return object_list
 
 
