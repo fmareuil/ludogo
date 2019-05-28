@@ -166,10 +166,16 @@ class GameListView(generic.ListView):
             object_list = object_list | olist
         if timetoplay:
             olist = self.model.objects.filter(timemax__lte=int(timetoplay))
-            object_list = object_list | olist
+            if not object_list:
+                object_list = olist
+            else:
+                object_list = object_list.intersection(olist)
         if nbplayer:
             olist = self.model.objects.filter(playersmax__gte=int(nbplayer), playersmin__lte=int(nbplayer))
-            object_list = object_list | olist
+            if not object_list:
+                object_list = olist
+            else:
+                object_list = object_list.intersection(olist)
         return object_list
 
 
