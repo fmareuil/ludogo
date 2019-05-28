@@ -151,13 +151,19 @@ class MovieListView(generic.ListView):
                                                  Q(genres__name__icontains=pat) |
                                                  Q(french_title__icontains=pat) |
                                                  Q(realisators__firstname__icontains=pat) |
-                                                 Q(realisators__firstname__icontains=pat)).distinct()
-            object_list = object_list | olist
+                                                 Q(realisators__lastname__icontains=pat)).distinct()
+            if object_list:
+                object_list = object_list.intersection(olist)
+            else:
+                object_list = olist
         if random == 'yes':
             l = list(self.model.objects.values_list('id', flat=True))
             if len(l) > 0:
                 olist = self.model.objects.filter(id=rand.choice(l))
-            object_list = object_list | olist
+            if object_list:
+                object_list = object_list.intersection(olist)
+            else:
+                object_list = olist
         return object_list
 
 
