@@ -16,10 +16,12 @@ class MovieForm(ModelForm):
         super(MovieForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
-            if visible.field in ['title', 'french_title', 'genres', 'format', 'langue', 'localisation']:
+            if visible.field.label in ['Title', 'French_title', 'Genres', 'Format', 'Langue', 'Localisation']:
                 visible.field.required = True
             else:
                 visible.field.required = False
+            if visible.field.label in ['Actors', 'Realisators', 'Genres']:
+                visible.field.widget.attrs['size'] = 10
         self.fields['genres'].queryset = Genre.objects.filter(type=Genre.TYPE_MOVIE)
 
     class Meta:

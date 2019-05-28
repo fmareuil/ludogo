@@ -22,6 +22,8 @@ class GameForm(ModelForm):
                 visible.field.required = True
             else:
                 visible.field.required = False
+            if visible.field.label in ['Creators','Genres']:
+                visible.field.widget.attrs['size'] = 10
         self.fields['genres'].queryset = Genre.objects.filter(type=Genre.TYPE_GAME)
 
     class Meta:
