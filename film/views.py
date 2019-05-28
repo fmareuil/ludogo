@@ -9,6 +9,8 @@ from django.urls import reverse_lazy
 
 import imdb
 import datetime
+import random as rand
+import re
 
 # Create your views here.
 
@@ -117,7 +119,6 @@ def searchmovie(request):
         return render(request, 'film/addnew_movie.html')
 
 def get_aka(aka):
-    import re
     akas = re.sub(' +',' ', aka).split('\n \n \n')
     for aka in akas:
         if 'France' in aka:
@@ -125,6 +126,7 @@ def get_aka(aka):
         else:
             fr_aka = ""
     return str(fr_aka.strip())
+
 
 class MovieListView(generic.ListView):
     model = Movie
@@ -138,18 +140,24 @@ class MovieListView(generic.ListView):
 
     def get_queryset(self):
         pattern = self.request.GET.get('search_field',None)
+        random = self.request.GET.get('random',None)
         object_list = self.model.objects.none()
         if pattern:
             patterns = pattern.split()
             for pat in patterns:
-                list = self.model.objects.filter(Q(title__icontains=pat) |
+                olist = self.model.objects.filter(Q(title__icontains=pat) |
                                                  Q(actors__firstname__icontains=pat) |
                                                  Q(actors__lastname__icontains=pat) |
                                                  Q(genres__name__icontains=pat) |
                                                  Q(french_title__icontains=pat) |
                                                  Q(realisators__firstname__icontains=pat) |
                                                  Q(realisators__firstname__icontains=pat)).distinct()
-            object_list = object_list | list
+            object_list = object_list | olist
+        if random == 'yes':
+            l = list(self.model.objects.values_list('id', flat=True))
+            if len(l) > 0:
+                olist = self.model.objects.filter(id=rand.choice(l))
+            object_list = object_list | olist
         return object_list
 
 

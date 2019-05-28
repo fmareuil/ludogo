@@ -3,7 +3,13 @@ from django import forms
 from .models import Game
 from common.models import Genre
 
+
 class GameForm(ModelForm):
+
+    date = forms.DateField(
+        widget=forms.DateInput(format='%Y', attrs={'class': 'datepicker'}),
+        input_formats=('%Y',)
+    )
 
     def __init__(self, *args, **kwargs):
         super(GameForm, self).__init__(*args, **kwargs)

@@ -159,17 +159,17 @@ class GameListView(generic.ListView):
         if pattern:
             patterns = pattern.split()
             for pat in patterns:
-                list = self.model.objects.filter(Q(title__icontains=pat) |
+                olist = self.model.objects.filter(Q(title__icontains=pat) |
                                                  Q(creators__firstname__icontains=pat) |
                                                  Q(creators__lastname__icontains=pat) |
                                                  Q(genres__name__icontains=pat)).distinct()
-            object_list = object_list | list
+            object_list = object_list | olist
         if timetoplay:
-            list = self.model.objects.filter(timemax__lte=int(timetoplay))
-            object_list = object_list | list
+            olist = self.model.objects.filter(timemax__lte=int(timetoplay))
+            object_list = object_list | olist
         if nbplayer:
-            list = self.model.objects.filter(playersmax__gte=int(nbplayer), playersmin__lte=int(nbplayer))
-            object_list = object_list | list
+            olist = self.model.objects.filter(playersmax__gte=int(nbplayer), playersmin__lte=int(nbplayer))
+            object_list = object_list | olist
         return object_list
 
 
