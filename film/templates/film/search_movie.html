@@ -19,6 +19,7 @@
             <input class="btn btn-primary btn-xs" type="submit" value="Rechercher">
             <input class="btn btn-warning btn-xs" type="reset" value="Reset">
             <a href="{% url 'film:search' %}?random=yes"  class="btn btn-info btn-xs" role="button">Trouve moi un film</a>
+            <span class="float-right">Vous avez {{ nbr_movies }} films</span>
         </div>
     </div>
     </div>

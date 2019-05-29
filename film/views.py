@@ -79,6 +79,10 @@ class MovieCreateView(generic.CreateView):
                     real = Person.objects.get_or_create(firstname='', lastname=realname[0])
                 listreal.append(real[0].id)
             newmovie['realisators'] = listreal
+            if 'certificates' in movie:
+                for certif in movie['certificates']:
+                    if 'France' in certif:
+                        newmovie['certificate'] = certif.split(':')[1].lower()
         else:
             newmovie = {}
         return newmovie
@@ -136,6 +140,7 @@ class MovieListView(generic.ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(MovieListView,self).get_context_data(**kwargs)
         context['view_search_field'] = self.request.GET.get('search_field',None)
+        context['nbr_movies'] = self.model.objects.count()
         return context
 
     def get_queryset(self):
@@ -160,10 +165,10 @@ class MovieListView(generic.ListView):
             l = list(self.model.objects.values_list('id', flat=True))
             if len(l) > 0:
                 olist = self.model.objects.filter(id=rand.choice(l))
-            if object_list:
-                object_list = object_list.intersection(olist)
-            else:
-                object_list = olist
+                if object_list:
+                    object_list = object_list.intersection(olist)
+                else:
+                    object_list = olist
         return object_list
 
 

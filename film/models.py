@@ -21,6 +21,15 @@ class Langue(models.Model):
 
 
 class Movie(models.Model):
+    TT_PUBLIC = "tous publics"
+    TT_PUBLICW = "tous publics (avec avertissement)"
+    DIX = "10"
+    DOUZE = "12"
+    SEIZE = "16"
+    DIXHUIT = "18"
+    X = "X"
+    TYPE_CERTIF = ((TT_PUBLIC, 'Tous publics'), (TT_PUBLICW, 'Tous publics (avec avertissement)'), (DIX, 'plus de 10ans'),
+                   (DOUZE,'plus de 12ans'), (SEIZE, 'plus de 16ans'), (DIXHUIT, 'plus de 18ans'), (X, 'Adulte'))
     title = models.CharField(max_length=300, help_text='Titre du film original')
     french_title = models.CharField(max_length=300, help_text='Titre du film français')
     synopsis = models.TextField(help_text='synopsis du film')
@@ -31,6 +40,7 @@ class Movie(models.Model):
     format = models.ForeignKey(Format, help_text="format du film", on_delete=models.DO_NOTHING)
     langue = models.ForeignKey(Langue, help_text="langue.s du film", on_delete=models.DO_NOTHING)
     localisation = models.ForeignKey(Localisation, help_text="lieu où est le film", on_delete=models.DO_NOTHING)
+    certificate = models.CharField(max_length=50, help_text='certification', choices=TYPE_CERTIF)
 
     class Meta:
         unique_together = ['title', 'format', 'langue']

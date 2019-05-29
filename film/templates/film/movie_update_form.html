@@ -74,11 +74,19 @@
           <div class="card-body">{{form.realisators}}</div>
         </div>
         <div class="card border-secondary">
-          <div class="card-header text-center text-white bg-secondary"><h5>Date de sortie</h5></div>
+          <div class="card-header text-center text-white bg-secondary"><h5>Autres informations</h5></div>
         {% if form.date.errors %}
         <span class="text-danger"> {{ form.date.errors }} </span>
         {% endif %}
-          <div class="card-body"><p class="card-text">{{form.date}}</p></div>
+        {% if form.certificate.errors %}
+        <span class="text-danger"> {{ form.certificate.errors }} </span>
+        {% endif %}
+          <div class="card-body">
+              <p class="card-text">Date de sortie</p>
+              <p class="card-text">{{form.date}}</p>
+              <p class="card-text">Publics</p>
+              <p class="card-text">{{form.certificate}}</p>
+          </div>
        </div>
     </div>
     <div class="card-footer">

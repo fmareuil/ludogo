@@ -2,10 +2,10 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views import generic
-from django.db.models import Q
+from django.db.models import Q, Sum
 from .models import Game
 from .forms import GameForm, GameListForm
-from common.models import Genre, Person
+from common.models import Person
 from django.urls import reverse_lazy
 from bs4 import BeautifulSoup
 import requests
@@ -149,6 +149,8 @@ class GameListView(generic.ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(GameListView,self).get_context_data(**kwargs)
         context['view_search_field'] = self.request.GET.get('search_field',None)
+        context['nbr_games'] = self.model.objects.count()
+        context['valeur'] = self.model.objects.aggregate(Sum('tarif'))
         return context
 
     def get_queryset(self):
