@@ -1,6 +1,6 @@
 # ludogo
 
-A Django web application to make toy and video library.
+A django application to make a personal movie and board game library.
 
 To customize your home page, add images in :
 * common/static/common/images/add_game.png
