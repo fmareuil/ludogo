@@ -112,8 +112,9 @@
 <div class="container">
 <div class="card border-primary">
     <div class="card-body">
+        <p class="card-text">Pour plus d'information vous pouvez regarder :</p>
     {% for message in messages %}
-        <p class="card-text">{{ message }}</p>
+        <p class="card-text"><a href="{{ message }}">{{ message }}</a></p>
     {% endfor %}
     </div>
 </div>

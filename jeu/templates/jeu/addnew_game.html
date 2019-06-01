@@ -12,11 +12,20 @@
                  aria-describedby="newgameHelp"/>
           <small id="newgameHelp" class="form-text text-muted">un titre complet ou juste un morceau du titre est suffisant
           </small>
+            <!-- Material inline 1 -->
+          <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" id="dbsearchttf" name="dbsearch" value="ttf" checked>
+              <label class="form-check-label" for="dbsearchttf">Utiliser la base de donnée de tabletopfinder</label>
+           </div>
+           <div class="form-check form-check-inline">
+               <input type="radio" class="form-check-input" id="dbsearchtrictrac" name="dbsearch" value="trictrac">
+               <label class="form-check-label" for="dbsearchtrictrac">Utiliser la base de donnée de trictrac</label>
+           </div>
         </div>
         <div class="card-footer">
             <input class="btn btn-primary btn-xs" type="submit" value="Chercher">
             <input class="btn btn-warning btn-xs" type="reset" value="Reset">
-            <a href="{% url 'jeu:create' 'empty' %}"  class="btn btn-info btn-xs" role="button">Ajouter à partir d'une feuille vierge</a>
+            <a href="{% url 'jeu:create' 'ttf' 'empty' %}"  class="btn btn-info btn-xs" role="button">Ajouter à partir d'une feuille vierge</a>
         </div>
     </div>
     </div>
@@ -24,6 +33,8 @@
 {% if games %}
 <hr>
 <form method="post">{% csrf_token %}
+
+    <input type="hidden" name="dbsearch" id="dbsearch" value="{{ dbsearch }}">
     <div class="container">
     <div class="card border-primary">
         <div class="card-header text-center text-white bg-primary"><h3>Sélectionnez un jeu</h3></div>
@@ -41,7 +52,7 @@
         <div class="card-footer">
             <input class="btn btn-success btn-xs" type="submit" value="Ajouter">
             <input class="btn btn-warning btn-xs" type="reset" value="Reset">
-            <a href="{% url 'jeu:create' 'empty' %}"  class="btn btn-info btn-xs" role="button">Ajouter à partir d'une feuille vierge</a>
+            <a href="{% url 'jeu:create' 'ttf' 'empty' %}"  class="btn btn-info btn-xs" role="button">Ajouter à partir d'une feuille vierge</a>
         </div>
     </div>
     </div>
