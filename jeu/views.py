@@ -163,7 +163,7 @@ def getfromtrictrac(dbid):
             elif stro.text == "Prix public conseillé":
                 if stro.next:
                     tarif = stro.next.next.lower().strip(': ').strip('€').strip().replace(',','.')
-    urls = [url, "{}?query={}&limite=20".format(URL_REQUEST_TRICTRAC, dbid)]
+    urls = [url, "{}?query={}&limit=20".format(URL_REQUEST_TRICTRAC, dbid)]
     newgame = {'title': title, 'description': description, 'date': datetime.datetime(int(date), 1, 1),
                'creators': listcreat, 'agemin': agemin, 'playersmin': playersmin, 'playersmax': playersmax,
                'timemin': timemin, 'timemax': timemax, 'tarif': tarif}
