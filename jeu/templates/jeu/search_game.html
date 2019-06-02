@@ -41,13 +41,14 @@
     Liste des Jeux qui match {{ view_search_field }}
   </div>
     <div class="card-body">
-<table class="table">
+<table id="ludogotable" class="table display">
     <thead class="thead-light">
         <tr>
             <th scope="col">Titre</th>
             <th scope="col">Genres</th>
             <th scope="col">Nombre de Joueurs min-max</th>
             <th scope="col">Temps en minutes min-max</th>
+            <th scope="col">Age recommandé</th>
             <th scope="col">Localisation</th>
             <th scope="col"></th>
         </tr>
@@ -59,6 +60,7 @@
       <td>{% for genre in game.genres.all %}{{genre.name}} {% endfor %}</td>
       <td>{{ game.playersmin }}-{{ game.playersmax }}</td>
       <td>{{ game.timemin }}-{{ game.timemax }}</td>
+      <td>{{ game.agemin }}</td>
       <td>{{ game.localisation }}</td>
       <td>
         <a class="btn btn-link float-right"
@@ -75,3 +77,6 @@
 {% endif %}
 </div>
 {% endblock content %}
+
+
+

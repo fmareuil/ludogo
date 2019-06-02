@@ -32,13 +32,14 @@
     Liste des Films qui match {{ view_search_field }}
   </div>
     <div class="card-body">
-<table class="table border">
+<table id="ludogotable" class="table border">
     <thead class="thead-light">
         <tr>
             <th scope="col">Titre</th>
             <th scope="col">Genres</th>
             <th scope="col">Langue</th>
             <th scope="col">Format</th>
+            <th scope="col">Age conseillé</th>
             <th scope="col">Localisation</th>
             <th scope="col"></th>
         </tr>
@@ -50,6 +51,7 @@
       <td>{% for genre in movie.genres.all %}{{genre.name}} {% endfor %}</td>
       <td>{{ movie.langue }}</td>
       <td>{{ movie.format }}</td>
+      <th>{{ movie.certificate }}</th>
       <td>{{ movie.localisation }}</td>
       <td>
         <a class="btn btn-link float-right"
