@@ -137,10 +137,13 @@ def getfromtrictrac(dbid):
     if strongs:
         for stro in strongs:
             if stro.text == 'Description du jeu':
-                description = stro.find_next('p', attrs={"class":"readmore"}).text.strip('\n').strip()
+                description = stro.find_next('p', attrs={"id":"description-fr"})
+                if description:
+                    description = description.find_next('p')
+                    if description:
+                        description = description.text.strip('\n').strip()
             elif stro.text == 'Game play':
                 agemintemp = stro.find_next('i', attrs={'class':'ion-ios-body-outline'})
-                print(agemintemp.next, "AGEMIN")
                 if agemintemp and agemintemp.next:
                     agemintemp = agemintemp.next.lower()
                     if "à partir de" in agemintemp:
