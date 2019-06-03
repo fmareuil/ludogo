@@ -24,7 +24,7 @@ To customize your home page, add images in :
 * use git to clone source: 
   - launch git bash application 
   - git clone https://github.com/fmareuil/ludogo.git
-* with the invit commands windows:
+* with the Windows command prompt:
   - pip install virtualenvwrapper-win
   - mkvirtualenv venvludogo
   - workon venvludogo
