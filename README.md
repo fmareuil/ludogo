@@ -1,4 +1,4 @@
-# ludogo
+# ludogo <img src="/common/static/common/images/ludogo_icon.png" width="100"/>
 
 A django application to make a personal movie and board game library.
 
