@@ -8,6 +8,9 @@ To customize your home page, add images in :
 * common/static/common/images/search_game.png
 * common/static/common/images/search_movie.png 
 
+In most of the cases for each entry, game or movie, all informations can be recovered from the internet accessible databases with the search button.
+But in some case you have to add information manually. Use the admin interface to add localisation and game genres (mandatory) and if necessary, to add person, all other information can be add by the classical ludogo web interface from an empty page (movie or game).
+
 ## To deploy on linux:
 
 * git clone https://github.com/fmareuil/ludogo.git
