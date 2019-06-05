@@ -1,0 +1,3 @@
+@echo off
+if exist %UserProfile%\Envs\venvludogo (rmdir /Q /s %UserProfile%\Envs\venvludogo)
+cmd /k "pip install virtualenvwrapper-win & mkvirtualenv venvludogo & cd /d %UserProfile%\Envs\venvludogo\Scripts & activate & cd /d %UserProfile% & cd /D %~dp0..\ & pip install -r requirements.txt & python manage.py migrate & echo 'Admin User Creation: ' & python manage.py createsuperuser & echo 'installation complete'"
