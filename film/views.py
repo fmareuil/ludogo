@@ -124,12 +124,11 @@ def searchmovie(request):
 
 def get_aka(aka):
     akas = re.sub(' +',' ', aka).split('\n \n \n')
+    fr_aka = ""
     for aka in akas:
         if 'France' in aka:
-            fr_aka = aka.split('\n')[0]
-        else:
-            fr_aka = ""
-    return str(fr_aka.strip())
+            fr_aka = str(aka.split('\n')[0].strip())
+    return fr_aka
 
 
 class MovieListView(generic.ListView):
