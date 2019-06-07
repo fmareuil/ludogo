@@ -115,6 +115,8 @@ def getfromtrictrac(dbid):
         span = p.find_next('span').text
         if "édition" in span:
             date = span.strip("édition").strip()
+            if date:
+                date = datetime.datetime(int(date), 1, 1)
         if 'Par ' in p:
             aref = p.find_all('a')
     par = 0
@@ -167,7 +169,7 @@ def getfromtrictrac(dbid):
                 if stro.next:
                     tarif = stro.next.next.lower().strip(': ').strip('€').strip().replace(',','.')
     urls = [url, "{}?query={}&limit=20".format(URL_REQUEST_TRICTRAC, dbid)]
-    newgame = {'title': title, 'description': description, 'date': datetime.datetime(int(date), 1, 1),
+    newgame = {'title': title, 'description': description, 'date': date,
                'creators': listcreat, 'agemin': agemin, 'playersmin': playersmin, 'playersmax': playersmax,
                'timemin': timemin, 'timemax': timemax, 'tarif': tarif}
     return newgame, urls

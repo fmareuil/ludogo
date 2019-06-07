@@ -48,7 +48,6 @@ class MovieCreateView(generic.CreateView):
                 newmovie['title'] = movie['title']
             if 'year' in movie:
                 newmovie['date'] = datetime.datetime(movie['year'], 1, 1)
-
             if fraka:
                 newmovie['french_title'] = fraka
             listg = []
