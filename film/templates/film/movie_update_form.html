@@ -13,7 +13,7 @@
 <div class="card border-primary">
     <div class="card-header text-center text-white bg-primary"><h1>{{ form.title }}</h1>
     {{ form.french_title }}
-    {% if form.note %}
+    {% if form.note.value %}
     <span class="small">
         Note IMDB: {{ form.note.value }}
     </span></div>
@@ -91,7 +91,7 @@
               <p class="card-text">{{form.date}}</p>
               <p class="card-text">Publics</p>
               <p class="card-text">{{form.certificate}}</p>
-              {% if form.certificates %}
+              {% if form.certificates.value %}
               <span class="small">{{form.certificates.value}}</span>
               {% endif %}
           </div>
