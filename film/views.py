@@ -47,7 +47,7 @@ class MovieCreateView(generic.CreateView):
             elif 'plot outline' in movie:
                 newmovie['synopsis'] = movie['plot outline']
             elif 'plot' in movie:
-                newmovie['synopsis'] = movie['plot'][0]
+                newmovie['synopsis'] = movie['plot'][0].split('::')[0]
             if 'title' in movie:
                 newmovie['title'] = movie['title']
             if 'year' in movie:
