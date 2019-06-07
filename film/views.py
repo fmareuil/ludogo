@@ -86,6 +86,10 @@ class MovieCreateView(generic.CreateView):
                 for certif in movie['certificates']:
                     if 'France' in certif:
                         newmovie['certificate'] = certif.split(':')[1].lower()
+                if not 'certificate' in newmovie:
+                    newmovie['certificates'] = ', '.join(movie['certificates'])
+            if 'rating' in movie:
+                newmovie['note'] = movie['rating']
         else:
             newmovie = {}
         return newmovie

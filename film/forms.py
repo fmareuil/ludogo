@@ -6,7 +6,8 @@ from common.models import Genre, Person
 
 
 class MovieForm(ModelForm):
-
+    note = forms.CharField(max_length=150)
+    certificates = forms.CharField(max_length=300)
     date = forms.DateField(
         widget=forms.DateInput(format='%Y', attrs={'class': 'datepicker'}),
         input_formats=('%Y',)

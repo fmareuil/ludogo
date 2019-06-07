@@ -12,7 +12,12 @@
     <div class="container">
 <div class="card border-primary">
     <div class="card-header text-center text-white bg-primary"><h1>{{ form.title }}</h1>
-    {{ form.french_title }}</div>
+    {{ form.french_title }}
+    {% if form.note %}
+    <span class="small">
+        Note IMDB: {{ form.note.value }}
+    </span></div>
+    {% endif %}
     {% if form.title.errors %}
         <span class="text-danger"> {{ form.title.errors }} </span>
       {% endif %}
@@ -86,6 +91,9 @@
               <p class="card-text">{{form.date}}</p>
               <p class="card-text">Publics</p>
               <p class="card-text">{{form.certificate}}</p>
+              {% if form.certificates %}
+              <span class="small">{{form.certificates.value}}</span>
+              {% endif %}
           </div>
        </div>
     </div>
