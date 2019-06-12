@@ -13,7 +13,17 @@
     <div class="card border-info">
         <div class="card-header text-center text-white bg-info"><h3>Films à rechercher</h3></div>
         <div class="card-body">
-        <input class="form-control" id="id_search_field" placeholder="Pattern" type="text" name="search_field" value="">
+            <div class="form-row">
+                <div class="col">
+                    <input class="form-control" id="id_search_field" placeholder="Titre ou genre" type="text" name="search_field" value="">
+                </div>
+                <div class="col">
+                    <input class="form-control" id="id_search_actors" placeholder="Acteurs" type="text" name="search_actors" value="">
+                </div>
+                <div class="col">
+                    <input class="form-control" id="id_search_realisators" placeholder="Réalisateurs" type="text" name="search_realisators" value="">
+                </div>
+            </div>
         </div>
         <div class="card-footer md-3">
             <input class="btn btn-primary btn-xs" type="submit" value="Rechercher">
@@ -39,6 +49,7 @@
             <th scope="col">Genres</th>
             <th scope="col">Langue</th>
             <th scope="col">Format</th>
+            <th scope="col">Date de Sortie</th>
             <th scope="col">Age conseillé</th>
             <th scope="col">Localisation</th>
             <th scope="col"></th>
@@ -47,10 +58,11 @@
     <tbody>
     {% for movie in movie_list %}
     <tr>
-      <td><a href="{% url 'film:detail' movie.id %}">{{ movie.title }}</a></td>
+        <td><a href="{% url 'film:detail' movie.id %}">{{ movie.french_title }}<p><small>{{ movie.title }}</small></p></a></td>
       <td>{% for genre in movie.genres.all %}{{genre.name}} {% endfor %}</td>
       <td>{{ movie.langue }}</td>
       <td>{{ movie.format }}</td>
+      <td>{{ movie.date|date:"Y"}}</td>
       <th>{{ movie.certificate }}</th>
       <td>{{ movie.localisation }}</td>
       <td>

@@ -1,11 +1,12 @@
 # coding=utf-8
 from django.shortcuts import render, redirect
 from django.views import generic
-from django.db.models import Q
+from django.db.models import Q, Count
 from .models import Movie
 from .forms import MovieForm, MovieListForm
 from common.models import Genre, Person
 from django.urls import reverse_lazy
+from collections import Counter
 
 import imdb
 import datetime
@@ -145,37 +146,67 @@ class MovieListView(generic.ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(MovieListView,self).get_context_data(**kwargs)
-        context['view_search_field'] = self.request.GET.get('search_field',None)
+        searchfield = self.request.GET.get('search_field',None)
+        searchactors = self.request.GET.get('search_actors',None)
+        searchrealisators = self.request.GET.get('search_realisators',None)
+        if searchfield or searchactors or searchrealisators:
+            context['view_search_field'] = ' '.join([searchfield, searchactors, searchrealisators])
         context['nbr_movies'] = self.model.objects.count()
         return context
 
+    def search_patterns(self, pattern, object_list):
+        patterns = pattern.split()
+        for pat in patterns:
+            olist = self.model.objects.filter(Q(title__icontains=pat.strip()) |
+                                              Q(french_title__icontains=pat.strip()) |
+                                              Q(genres__name__icontains=pat.strip()))
+            object_list = object_list.union(olist, all=True)
+        return object_list
+
+    def search_actors(self, pattern, object_list):
+        patterns = pattern.split()
+        for pat in patterns:
+            olist = self.model.objects.filter(Q(actors__firstname__icontains=pat.strip()) |
+                                              Q(actors__lastname__icontains=pat.strip()))
+            object_list = object_list.union(olist, all=True)
+        return object_list
+
+    def search_realisators(self, pattern, object_list):
+        patterns = pattern.split()
+        for pat in patterns:
+            olist = self.model.objects.filter(Q(realisators__firstname__icontains=pat.strip()) |
+                                              Q(realisators__lastname__icontains=pat.strip()))
+            object_list = object_list.union(olist, all=True)
+        return object_list
+
     def get_queryset(self):
         pattern = self.request.GET.get('search_field',None)
+        actor_pattern = self.request.GET.get('search_actors',None)
+        realisator_pattern = self.request.GET.get('search_realisators',None)
         random = self.request.GET.get('random',None)
         object_list = self.model.objects.none()
         if pattern:
-            patterns = pattern.split()
-            for pat in patterns:
-                olist = self.model.objects.filter(Q(title__icontains=pat) |
-                                                 Q(actors__firstname__icontains=pat) |
-                                                 Q(actors__lastname__icontains=pat) |
-                                                 Q(genres__name__icontains=pat) |
-                                                 Q(french_title__icontains=pat) |
-                                                 Q(realisators__firstname__icontains=pat) |
-                                                 Q(realisators__lastname__icontains=pat)).distinct()
-            if object_list:
-                object_list = object_list.intersection(olist)
-            else:
-                object_list = olist
+            object_list = self.search_patterns(pattern, object_list)
+        if actor_pattern:
+            object_list = self.search_actors(actor_pattern, object_list)
+        if realisator_pattern:
+            object_list = self.search_realisators(realisator_pattern, object_list)
         if random == 'yes':
             l = list(self.model.objects.values_list('id', flat=True))
             if len(l) > 0:
                 olist = self.model.objects.filter(id=rand.choice(l))
-                if object_list:
-                    object_list = object_list.intersection(olist)
-                else:
-                    object_list = olist
-        return object_list
+                object_list = object_list.union(olist, all=True)
+        result = [item for items, c in Counter(list(object_list.values_list('id', flat=True))).most_common()
+                  for item in [items] * c]
+        uniqresult = []
+        for n in result:
+            if not n in uniqresult:
+                uniqresult.append(n)
+        clauses = ' '.join(['WHEN id=%s THEN %s' % (pk, i) for i, pk in enumerate(uniqresult)])
+        ordering = 'CASE %s END' % clauses
+        queryset = self.model.objects.filter(pk__in=uniqresult).extra(
+            select={'ordering': ordering}, order_by=('ordering',))
+        return queryset
 
 
 class MovieDeleteView(generic.DeleteView):

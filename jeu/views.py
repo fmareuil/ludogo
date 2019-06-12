@@ -269,7 +269,11 @@ class GameListView(generic.ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(GameListView,self).get_context_data(**kwargs)
-        context['view_search_field'] = self.request.GET.get('search_field',None)
+        searchfield = self.request.GET.get('search_field',None)
+        maxtime = self.request.GET.get('max_time', None)
+        nbplay = self.request.GET.get('nb_play', None)
+        if searchfield or maxtime or nbplay:
+            context['view_search_field'] = ' '.join([searchfield, maxtime, nbplay])
         context['nbr_games'] = self.model.objects.count()
         context['valeur'] = self.model.objects.aggregate(Sum('tarif'))
         return context
