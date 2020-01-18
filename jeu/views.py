@@ -108,66 +108,57 @@ def getfromtrictrac(dbid):
     listcreat = []
     title = soupresult.find('h1', attrs={"itemprop":"name"})
     if title:
-        title = title.find_next('a').text.strip()
-
-    psmall = soupresult.findAll('p', attrs={"class":"small"})
-    for p in psmall:
-        span = p.find_next('span').text
-        if "édition" in span:
-            date = span.strip("édition").strip()
-            if date:
-                date = datetime.datetime(int(date), 1, 1)
-        if 'Par ' in p:
+        title = title.text.strip()
+    h5s = soupresult.findAll('h5')
+    for h5 in h5s:
+        if h5.text == "Description complète":
+            description = h5.find_next('p').text
+        if h5.text == "Auteurs et e\u0301ditions":
+            p = h5.find_next('p')
+            span = p.find_next('span')
+            if "édition" in span.text:
+                date = span.text.strip("édition ").strip()
+                if date:
+                    date = datetime.datetime(int(date), 1, 1)
             aref = p.find_all('a')
-    par = 0
-    for a in aref:
-        if 'Par' in a.previous:
-            par=1
-            name = a.text.strip().split()
-            creat = Person.objects.get_or_create(firstname=' '.join(name[0:-1]), lastname=name[-1])
-            listcreat.append(creat[0].id)
-        if ',' in a.previous and par:
-            name = a.text.strip().split()
-            creat = Person.objects.get_or_create(firstname=' '.join(name[0:-1]), lastname=name[-1])
-            listcreat.append(creat[0].id)
-        if 'et' in a.previous and par:
-            name = a.text.strip().split()
-            creat = Person.objects.get_or_create(firstname=' '.join(name[0:-1]), lastname=name[-1])
-            listcreat.append(creat[0].id)
-            break
-    strongs = soupresult.findAll('strong')
-    if strongs:
-        for stro in strongs:
-            if stro.text == 'Description du jeu':
-                description = stro.find_next('p', attrs={"id":"description-fr"})
-                if description:
-                    description = description.find_next('p')
-                    if description:
-                        description = description.text.strip('\n').strip()
-            elif stro.text == 'Game play':
-                agemintemp = stro.find_next('i', attrs={'class':'ion-ios-body-outline'})
-                if agemintemp and agemintemp.next:
-                    agemintemp = agemintemp.next.lower()
-                    if "à partir de" in agemintemp:
-                        agemin = agemintemp.strip('à partir de').strip('ans').strip()
-                players = stro.find_next('i', attrs={"class":"ion-ios-people-outline"})
-                if players and players.next:
-                    players = players.next.lower()
-                    if "jusqu'à" in players:
-                        playersmin = players.strip("jusqu'à").strip("joueurs").strip()
-                        playersmax = playersmin
-                    else:
-                        players = players.split('à')
-                        playersmin = players[0].strip()
-                        playersmax = players[1].strip()
-                timemintemp = stro.find_next('i', attrs={'class':'ion-ios-timer-outline'})
-                if timemintemp and timemintemp.next:
-                    timemintemp = timemintemp.next.lower()
-                    timemin = timemintemp.strip('min').strip()
-                    timemax = timemin
-            elif stro.text == "Prix public conseillé":
-                if stro.next:
-                    tarif = stro.next.next.lower().strip(': ').strip('€').strip().replace(',','.')
+            par = 0
+            for a in aref:
+                if 'Par' in a.previous:
+                    par=1
+                    name = a.text.strip().split()
+                    creat = Person.objects.get_or_create(firstname=' '.join(name[0:-1]), lastname=name[-1])
+                    listcreat.append(creat[0].id)
+                if ',' in a.previous and par:
+                    name = a.text.strip().split()
+                    creat = Person.objects.get_or_create(firstname=' '.join(name[0:-1]), lastname=name[-1])
+                    listcreat.append(creat[0].id)
+                if 'et' in a.previous and par:
+                    name = a.text.strip().split()
+                    creat = Person.objects.get_or_create(firstname=' '.join(name[0:-1]), lastname=name[-1])
+                    listcreat.append(creat[0].id)
+                    break
+    gameplay = soupresult.find('div', attrs={'class':'gameplay'})
+    if gameplay:
+        players = gameplay.find_next('i', attrs={"class":"ion-ios-people-outline"})
+        if players and players.next:
+           players = players.next.lower()
+           if "jusqu'à" in players:
+               playersmin = players.strip("jusqu'à").strip("joueurs").strip()
+               playersmax = playersmin
+           else:
+               players = players.split('à')
+               playersmin = players[0].strip()
+               playersmax = players[1].strip()
+        agemintemp = gameplay.find_next('i', attrs={'class':'ion-ios-body-outline'})
+        if agemintemp and agemintemp.next:
+            agemintemp = agemintemp.next.lower()
+            if "à partir de" in agemintemp:
+                agemin = agemintemp.strip('à partir de').strip('ans').strip()
+        timemintemp = gameplay.find_next('i', attrs={'class':'ion-ios-timer-outline'})
+        if timemintemp and timemintemp.next:
+            timemintemp = timemintemp.next.lower()
+            timemin = timemintemp.strip('min').strip()
+            timemax = timemin
     urls = [url, "{}?query={}&limit=20".format(URL_REQUEST_TRICTRAC, dbid)]
     newgame = {'title': title, 'description': description, 'date': date,
                'creators': listcreat, 'agemin': agemin, 'playersmin': playersmin, 'playersmax': playersmax,
