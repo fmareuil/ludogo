@@ -67,7 +67,10 @@ def getfromttf(dbid):
     tables = details.findAll('tr')
     for tr in tables:
         if tr.find_next('th').text == "Publié:":
-            date = int(tr.find_next('td').text)
+            try:
+                date = int(tr.find_next('td').text)
+            except ValueError:
+                date = int(tr.find_next('td').text.split()[1])
         if tr.find_next('th').text == "Concepteurs:":
             liconcepteurs = tr.findAll('li')
             for concepteur in liconcepteurs:
@@ -97,8 +100,6 @@ def getfromtrictrac(dbid):
     url = URL_HTML_TRICTRAC.format(dbid)
     htmlresult = requests.get(url)
     soupresult = BeautifulSoup(htmlresult.text)
-    title = None
-    description = None
     agemin = None
     playersmin = None
     playersmax = None
@@ -157,6 +158,8 @@ def getfromtrictrac(dbid):
                     agemintemp = agemintemp.text
                     if "ans et +" in agemintemp:
                         agemin = agemintemp.strip('ans et +').strip()
+                    elif " à " in agemintemp:
+                        agemin = agemintemp.split('à')[0].strip()
                 continue
             if play.find_next("div", attrs={"class": "sub"}).text == "Temps de partie":
                 timemintemp = play
