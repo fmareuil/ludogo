@@ -35,18 +35,21 @@ class GameUpdateView(generic.UpdateView):
         return reverse_lazy('jeu:detail', kwargs=self.kwargs)
 
 def getfromttf(dbid):
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
     url = URL_HTML_TTF.format(dbid)
-    htmlresult = requests.get(url)
+    htmlresult = requests.get(url, headers=headers)
     soupresult = BeautifulSoup(htmlresult.text)
-    header = soupresult.find('div', attrs={'id': 'product-detail-header'})
-    details = soupresult.find('div', attrs={'id': 'product-detail-properties'})
-    tarifs = soupresult.find('div', attrs={'id': 'product-detail-prices'})
+    header = soupresult.find('div', attrs={'id': 'product-header'})
+    details = soupresult.find('div', attrs={'id': 'product-properties'})
+    tarifs = soupresult.find('div', attrs={'id': 'product-prices'})
     title = header.find_next('h1')
     if title:
         title = title.text
-    description = header.find_next('p')
-    if description:
-        description = description.text
+    descriptions = header.find_all('p')
+    description = []
+    for desc in descriptions:
+        description.append(desc.text)
+    description = "'\n".join(description)
 
     tarif = None
     agemin = None
@@ -59,9 +62,9 @@ def getfromttf(dbid):
     else:
         playersmax = playersmin
     times = header.find_next('div', attrs={'title': 'temps', 'class': 'tag'})
-    timemax = times.text.split('-')[0].strip()
+    timemax = times.text.split('-')[1].strip()
     if len(times.text.split('-')) > 1:
-        timemin = times.text.split('-')[1].strip()
+        timemin = times.text.split('-')[0].strip()
     else:
         timemin = timemax
     tables = details.findAll('tr')
@@ -73,10 +76,16 @@ def getfromttf(dbid):
                 date = int(tr.find_next('td').text.split()[1])
         if tr.find_next('th').text == "Concepteurs:":
             liconcepteurs = tr.findAll('li')
-            for concepteur in liconcepteurs:
-                name = concepteur.find('a').text.strip('\n').strip().split(' ')
-                creat = Person.objects.get_or_create(firstname=' '.join(name[0:-1]), lastname=name[-1])
-                listcreat.append(creat[0].id)
+            if liconcepteurs:
+                for concepteur in liconcepteurs:
+                    name = concepteur.find('a').text.strip('\n').strip().split(' ')
+                    creat = Person.objects.get_or_create(firstname=' '.join(name[0:-1]), lastname=name[-1])
+                    listcreat.append(creat[0].id)
+            else:
+                name = tr.find('a').text.strip('\n').strip().split(' ')
+                if name:
+                    creat = Person.objects.get_or_create(firstname=' '.join(name[0:-1]), lastname=name[-1])
+                    listcreat.append(creat[0].id)
     prix = tarifs.findAll('tr')
     for tr in prix:
         tds = tr.findAll('td')
@@ -214,11 +223,13 @@ class GameCreateView(generic.CreateView):
         return reverse_lazy('jeu:detail', kwargs={'game_id':self.object.pk})
 
 def ttfsearch(query):
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
     payload = {'query': query.replace(' ', '+').lower(), 'page': 1}
-    result = requests.get(URL_REQUEST_TTF, params=payload)
+    result = requests.get(URL_REQUEST_TTF, params=payload, headers=headers)
     #result = result.json()
     soupresult = BeautifulSoup(result.text)
-    items = soupresult.find_all('a', attrs={"class": "w-full xl:w-1/2 px-3"}, href=True)
+    results = soupresult.find('div', class_="results")
+    items = results.find_all('a', href=True)
     #payload = {'query': query.replace(' ', '+').lower(), 'page': 2}
     #result2 = requests.get(URL_REQUEST_TTF, params=payload)
     #result2 = result2.json()

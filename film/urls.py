@@ -1,13 +1,13 @@
 # coding=utf-8
-from django.conf.urls import url
+from django.urls import path
 from .views import MovieDetailView, MovieUpdateView, MovieCreateView, searchmovie, MovieListView, MovieDeleteView
 
 app_name = 'film'
 urlpatterns = [
-    url(r'^addnew$', searchmovie, name="addnew"),
-    url(r'^search$', MovieListView.as_view(), name="search"),
-    url(r'^addnew/(?P<imdb_id>\w+)$', MovieCreateView.as_view(), name="create"),
-    url(r'^(?P<movie_id>\d+)$', MovieDetailView.as_view(), name="detail"),
-    url(r'^update/(?P<movie_id>\d+)$', MovieUpdateView.as_view(), name="update"),
-    url(r'^delete/(?P<movie_id>\d+)$', MovieDeleteView.as_view(), name="delete"),
+    path(r'addnew', searchmovie, name="addnew"),
+    path(r'search', MovieListView.as_view(), name="search"),
+    path(r'addnew/<slug:imdb_id>', MovieCreateView.as_view(), name="create"),
+    path(r'<int:movie_id>', MovieDetailView.as_view(), name="detail"),
+    path(r'update/<int:movie_id>', MovieUpdateView.as_view(), name="update"),
+    path(r'delete/<int:movie_id>', MovieDeleteView.as_view(), name="delete"),
 ]

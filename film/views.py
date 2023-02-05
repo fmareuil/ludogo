@@ -8,7 +8,7 @@ from common.models import Genre, Person
 from django.urls import reverse_lazy
 from collections import Counter
 
-import imdb
+from imdb import Cinemagoer
 import datetime
 import random as rand
 import re
@@ -39,7 +39,7 @@ class MovieCreateView(generic.CreateView):
 
     def get_initial(self):
         if self.kwargs['imdb_id'] != 'empty':
-            ia = imdb.IMDb()
+            ia = Cinemagoer()
             movie = ia.get_movie(self.kwargs['imdb_id'])
             fraka = get_aka(movie['aka'][0])
             newmovie = {}
@@ -101,7 +101,7 @@ class MovieCreateView(generic.CreateView):
 
 def searchmovie(request):
     if request.method == "GET":
-        ia = imdb.IMDb()
+        ia = Cinemagoer()
         newmovie = request.GET.get('newmovie', None)
         if newmovie:
             result = ia.search_movie(newmovie)
