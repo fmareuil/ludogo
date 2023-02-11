@@ -120,10 +120,10 @@ def getfromtrictrac(dbid):
     title = soupresult.find('h1', attrs={"itemprop":"name", "class": "game-title"})
     if title:
         title = title.find_next('a').text.strip()
-    divdescript =  soupresult.find('div', attrs={'id': 'description'})
-    description = divdescript.find_next('p').text
+    divdescript =  soupresult.find('div', attrs={'itemprop': 'description'})
+    description = divdescript.find_next('p').text.replace('<br>','\n')
     casting = soupresult.find('div', attrs={'class': 'casting'})
-    details = soupresult.find('div', attrs={'class': 'more_details'})
+    details = soupresult.findAll('div', attrs={'class': 'part'})
     shop = soupresult.find('div', attrs={'class': 'shops'})
     aref = casting.find_all('a')
     par = 0
@@ -142,16 +142,17 @@ def getfromtrictrac(dbid):
             creat = Person.objects.get_or_create(firstname=' '.join(name[0:-1]), lastname=name[-1])
             listcreat.append(creat[0].id)
             break
-    hdetail = details.find_next('h5', attrs={"class": "subtitle"})
-    if hdetail.text == "Détails":
-        pdetail = hdetail.find_next("p")
-        date = int(pdetail.text.split(u'\xa0')[-1].strip())
+    for detail in details:
+        hdetail = detail.find_next('h4')
+        if hdetail.text == "Détails":
+            divdetail = hdetail.find_next("div")
+            date = int(divdetail.text.split(u'\xa0')[-1].strip())
 
     gameplay = soupresult.find('div', attrs={'class':'gameplay'})
     if gameplay:
         gameplay = gameplay.find_all('div', attrs={"class": "stat mini"})
         for play in gameplay:
-            if play.find_next("div", attrs={"class": "sub"}).text == "Nombre de joueurs":
+            if play.find_next("div", attrs={"class": "sub"}).text == "Joueurs":
                 players = play
                 players.find_next('span').decompose()
                 players.find_next('div', attrs={'class': 'sub'}).decompose()
